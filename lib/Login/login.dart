@@ -7,7 +7,10 @@ import 'package:reusemart_mobile/homeHunter.dart';
 import 'package:reusemart_mobile/homeKurir.dart';
 import 'package:reusemart_mobile/homePenitip.dart';
 import 'package:reusemart_mobile/homePembeli.dart';
+import 'package:reusemart_mobile/push_notification.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
+
 
 class Login extends StatefulWidget {
   const Login({Key? key}) : super(key: key);
@@ -23,6 +26,18 @@ class _LoginState extends State<Login> {
 
   String? selectedRole;
 
+  Future<String?> getFcmToken() async {
+    try {
+      String? token = await FirebaseMessaging.instance.getToken();
+      print('FCM Token: $token');
+      return token;
+    } catch (e) {
+      print('Error getting FCM token: $e');
+      return null;
+    }
+  }
+
+
   Future<void> _login() async {
     final username = usernameController.text.trim();
     final password = passwordController.text.trim();
@@ -32,18 +47,27 @@ class _LoginState extends State<Login> {
       return;
     }
 
+    String? fcmToken = await getFcmToken();
+
     if (selectedRole == 'pegawai') {
       final responseData = await PegawaiClient.login(username, password);
       if (responseData != null && responseData['data']['token'] != null) {
         final token = responseData['data']['token'];
         final idJabatan = responseData['data']['pegawai']['idJabatan'].toString();
+
+        if (fcmToken != null) {
+          await PegawaiClient.registerFcmToken(token, fcmToken); 
+          // Implementasikan fungsi ini di backend kamu untuk simpan token FCM
+        }
         
         if (idJabatan == "4") {
           await _saveToken(token);
+          await PushNotifications.subscribeToUserTopic('kurir');
           showSnackBar('Login berhasil!');
           Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const homeKurir()));
         } else if (idJabatan == "6") {
           await _saveToken(token);
+          await PushNotifications.subscribeToUserTopic('hunter');
           showSnackBar('Login berhasil!');
           Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const homeHunter()));
         } else {
@@ -55,7 +79,13 @@ class _LoginState extends State<Login> {
       final responseData = await PembeliClient.login(username, password);
       if (responseData != null && responseData['data']['token'] != null) {
         final token = responseData['data']['token'];
+
+        if (fcmToken != null) {
+          await PembeliClient.registerFcmToken(token, fcmToken);
+        }
+
         await _saveToken(token);
+        await PushNotifications.subscribeToUserTopic('pembeli');
         showSnackBar('Login berhasil!');
         Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const homePembeli()));
         return;
@@ -64,7 +94,12 @@ class _LoginState extends State<Login> {
       final responseData = await PenitipClient.login(username, password);
       if (responseData != null && responseData['penitip']['token'] != null) {
         final token = responseData['penitip']['token'];
+        if (fcmToken != null) {
+          await PenitipClient.registerFcmToken(token, fcmToken);
+        }
+
         await _saveToken(token);
+        await PushNotifications.subscribeToUserTopic('penitip');
         showSnackBar('Login berhasil!');
         Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const homePenitip()));
         return;
