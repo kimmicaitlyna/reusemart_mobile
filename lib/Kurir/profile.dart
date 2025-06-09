@@ -130,7 +130,7 @@ class _ProfileKurirState extends State<ProfileKurir> {
             label: 'Notifikasi',
           ),
           NavigationDestination(
-            icon: Icon(Icons.message),
+            icon: Icon(Icons.history),
             label: 'History',
           ),
           NavigationDestination(

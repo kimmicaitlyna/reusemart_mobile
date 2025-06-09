@@ -151,7 +151,7 @@ class _HistoryPengirimanState extends State<HistoryPengiriman> {
                 label: 'Notifikasi',
               ),
               NavigationDestination(
-                icon: Icon(Icons.message),
+                icon: Icon(Icons.history),
                 label: 'History',
               ),
               NavigationDestination(
@@ -171,10 +171,13 @@ class _HistoryPengirimanState extends State<HistoryPengiriman> {
                 itemCount: historyData!['data'].length,
                 itemBuilder: (context, index) {
                   final item = historyList[index];
-                  String namaBarang = item['detail_transaksi_pembelian'] != null &&
-                      item['detail_transaksi_pembelian'].isNotEmpty
-                      ? item['detail_transaksi_pembelian'][0]['barang']['namaBarang']
-                      : '-';
+
+                  /////////////nama barang///////////
+                  List<dynamic> detailList = item['detail_transaksi_pembelian'] ?? [];
+                    String namaBarang = detailList.isNotEmpty
+                        ? detailList.map((detail) => detail['barang']['namaBarang']).join(', ')
+                        : '-';
+
                   return Card(
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(24),
