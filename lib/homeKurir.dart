@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:reusemart_mobile/Kurir/history.dart';
 import 'package:reusemart_mobile/Kurir/profile.dart';
 
 
@@ -18,27 +19,27 @@ class _HomeKurirState extends State<HomeKurir> {
     });
 
     if (index == 0) {
-        // Navigator.push(
-        //     context,
-        //     MaterialPageRoute(builder: (context) => const HomeKurir()),
-        // );
-        } else if (index == 1) {
-        // Navigator.push(
-        //   context,
-        //   MaterialPageRoute(builder: (context) => const MessagesView()),
-        // );
-        } else if (index == 2) {
-        //   Navigator.push(
-        //     context,
-        //     MaterialPageRoute(builder: (context) => const ProfileKurir()),
-        //   );
-        }
-        else if (index == 3) {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => const ProfileKurir()),
-          );
-        }
+      // Navigator.push(
+      //     context,
+      //     MaterialPageRoute(builder: (context) => const HomeKurir()),
+      // );
+    } else if (index == 1) {
+    // Navigator.push(
+    //   context,
+    //   MaterialPageRoute(builder: (context) => const MessagesView()),
+    // );
+    } else if (index == 2) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => const HistoryPengiriman()),
+      );
+    }
+    else if (index == 3) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => const ProfileKurir()),
+      );
+    }
   }
 
   @override

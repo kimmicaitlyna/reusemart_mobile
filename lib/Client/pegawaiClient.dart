@@ -4,7 +4,7 @@ import 'dart:io';
 
 class PegawaiClient{
   // static const String baseUrl ='http://192.168.18.27/reusemart_mobile/public/api';
-  static const String baseUrl ='http://192.168.18.27:8000/api';
+  static const String baseUrl ='http://192.168.108.121:8000/api';
   // static const String baseUrl ='http://127.0.0.1:8000/api';
   // static const String baseUrl ='http://10.0.2.2:8000/api';   //emulator
 
@@ -93,6 +93,32 @@ static Future<void> registerFcmToken(String authToken, String fcmToken) async {
         return true;
       } else {
         return false;
+      }
+    } catch (e) {
+      throw Exception('Error: $e');
+    }
+  }
+
+  static Future<Map<String, dynamic>?> getHistoryKurir(String authToken) async {
+    final url = Uri.parse('$baseUrl/getHistory');
+
+    try {
+      final response = await http.get(
+        url,
+        headers: {
+          "Authorization": "Bearer $authToken",
+          "Content-Type": "application/json",
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        print('Get data Response: $data');
+        return data;
+      } else {
+        final errorData = jsonDecode(response.body);
+        print('Get data failed: ${errorData['message'] ?? 'Unknown error'}');
+        return null;
       }
     } catch (e) {
       throw Exception('Error: $e');
