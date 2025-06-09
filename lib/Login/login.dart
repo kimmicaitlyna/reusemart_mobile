@@ -56,6 +56,7 @@ class _LoginState extends State<Login> {
         final idJabatan = responseData['data']['pegawai']['idJabatan'].toString();
 
         if (fcmToken != null) {
+          print('Sending FCM Token to the backend: $fcmToken');
           await PegawaiClient.registerFcmToken(token, fcmToken); 
         }
         
@@ -68,7 +69,7 @@ class _LoginState extends State<Login> {
           await _saveToken(token);
           await PushNotifications.subscribeToUserTopic('hunter');
           showSnackBar('Login berhasil!');
-          Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const homeHunter()));
+
         } else {
           showSnackBar('Jabatan tidak dikenali');
         }
@@ -78,8 +79,9 @@ class _LoginState extends State<Login> {
       final responseData = await PembeliClient.login(username, password);
       if (responseData != null && responseData['data']['token'] != null) {
         final token = responseData['data']['token'];
-
+        print('Sending FCM Token to the backend: $fcmToken');
         if (fcmToken != null) {
+          print('Sending FCM Token to the backend: $fcmToken');
           await PembeliClient.registerFcmToken(token, fcmToken);
         }
 
