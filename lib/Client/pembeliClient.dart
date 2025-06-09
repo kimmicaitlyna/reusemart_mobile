@@ -4,9 +4,9 @@ import 'dart:io';
 
 class PembeliClient{
   // static const String baseUrl ='http://192.168.18.27/reusemart_mobile/public/api';
-  // static const String baseUrl ='http://192.168.18.27/api';
+  static const String baseUrl ='http://192.168.18.27:8000/api';
   // static const String baseUrl ='http://127.0.0.1:8000/api';
-  static const String baseUrl ='http://10.0.2.2:8000/api';
+  // static const String baseUrl ='http://10.0.2.2:8000/api';
   
 
 
@@ -24,6 +24,8 @@ class PembeliClient{
       final data = jsonDecode(response.body);
       return data;
     } else {
+      final errorData = jsonDecode(response.body);
+      print('Login failed: ${errorData['message'] ?? 'Unknown error'}');
       return null;
     }
   } catch (e) {

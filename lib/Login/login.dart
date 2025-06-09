@@ -51,20 +51,19 @@ class _LoginState extends State<Login> {
 
     if (selectedRole == 'pegawai') {
       final responseData = await PegawaiClient.login(username, password);
-      if (responseData != null && responseData['data']['token'] != null) {
+      if (responseData != null && responseData['status'] == true && responseData['data']['token'] != null) {
         final token = responseData['data']['token'];
         final idJabatan = responseData['data']['pegawai']['idJabatan'].toString();
 
         if (fcmToken != null) {
           await PegawaiClient.registerFcmToken(token, fcmToken); 
-          // Implementasikan fungsi ini di backend kamu untuk simpan token FCM
         }
         
         if (idJabatan == "4") {
           await _saveToken(token);
           await PushNotifications.subscribeToUserTopic('kurir');
           showSnackBar('Login berhasil!');
-          Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const homeKurir()));
+          Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const HomeKurir()));
         } else if (idJabatan == "6") {
           await _saveToken(token);
           await PushNotifications.subscribeToUserTopic('hunter');
@@ -94,6 +93,7 @@ class _LoginState extends State<Login> {
       final responseData = await PenitipClient.login(username, password);
       if (responseData != null && responseData['penitip']['token'] != null) {
         final token = responseData['penitip']['token'];
+        
         if (fcmToken != null) {
           await PenitipClient.registerFcmToken(token, fcmToken);
         }
@@ -212,7 +212,7 @@ class _LoginState extends State<Login> {
                       _login();
                     }
                   },
-                  child: const Text("Login", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+                  child: const Text("Login", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18, color: Colors.white)),
                 ),
               ],
             ),
