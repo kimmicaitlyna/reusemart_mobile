@@ -68,7 +68,7 @@ class _LoginState extends State<Login> {
           await _saveToken(token);
           await PushNotifications.subscribeToUserTopic('hunter');
           showSnackBar('Login berhasil!');
-          Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const homeHunter()));
+          Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const HomeHunter()));
         } else {
           showSnackBar('Jabatan tidak dikenali');
         }
@@ -86,7 +86,7 @@ class _LoginState extends State<Login> {
         await _saveToken(token);
         await PushNotifications.subscribeToUserTopic('pembeli');
         showSnackBar('Login berhasil!');
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const homePembeli()));
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const HomePembeli()));
         return;
       }
     } else if (selectedRole == 'penitip') {

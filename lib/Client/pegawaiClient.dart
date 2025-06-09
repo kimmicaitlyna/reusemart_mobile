@@ -4,8 +4,8 @@ import 'dart:io';
 
 class PegawaiClient{
   // static const String baseUrl ='http://192.168.18.27/reusemart_mobile/public/api';
-  // static const String baseUrl ='http://192.168.18.27:8000/api';
-  static const String baseUrl ='http://127.0.0.1:8000/api';
+  static const String baseUrl ='http://192.168.139.186:8000/api';
+  // static const String baseUrl ='http://127.0.0.1:8000/api';
   // static const String baseUrl ='http://10.0.2.2:8000/api';   //emulator
 
 
@@ -98,5 +98,24 @@ static Future<void> registerFcmToken(String authToken, String fcmToken) async {
       throw Exception('Error: $e');
     }
   }
+  static Future<List<dynamic>> getHistoriKomisiHunter(String authToken) async {
+  // Step 1: Get user data to extract idPegawai
+  final userData = await getData(authToken);
+  if (userData == null || userData['idPegawai'] == null) {
+    throw Exception('idPegawai tidak ditemukan');
+  }
+  final idPegawai = userData['idPegawai'];
+
+  // Step 2: Call the histori-komisi-hunter API
+  final url = Uri.parse('$baseUrl/histori-komisi-hunter/$idPegawai');
+  final response = await http.get(url);
+
+  if (response.statusCode == 200) {
+    final data = jsonDecode(response.body);
+    return data['data'] ?? [];
+  } else {
+    throw Exception('Gagal mengambil histori komisi');
+  }
+}
 
 }
