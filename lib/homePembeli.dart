@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-
+import 'package:reusemart_mobile/Pembeli/history.dart';
+import 'package:reusemart_mobile/Pembeli/profile.dart';
 class HomePembeli extends StatefulWidget {
   const HomePembeli({Key? key}) : super(key: key);
 
@@ -23,7 +24,10 @@ class _HomePembeliState extends State<HomePembeli> {
     } else if (index == 2) {
       // Navigate to History page if exists
     } else if (index == 3) {
-      // Navigate to Profil page if exists
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => const ProfilePembeli()),
+      );
     }
   }
 

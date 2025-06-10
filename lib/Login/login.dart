@@ -103,7 +103,7 @@ class _LoginState extends State<Login> {
         await _saveToken(token);
         await PushNotifications.subscribeToUserTopic('penitip');
         showSnackBar('Login berhasil!');
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const homePenitip()));
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const HomePenitip()));
         return;
       }
     }

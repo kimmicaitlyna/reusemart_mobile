@@ -9,7 +9,7 @@ plugins {
 }
 
 android {
-    namespace = "com.example.reusemart_mobile"
+    namespace = "P3L.reusemart"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = "27.0.12077973"
 
