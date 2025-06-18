@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:reusemart_mobile/Client/PembeliClient.dart';
-import 'package:reusemart_mobile/Pembeli/history.dart';
+import 'package:reusemart_mobile/Pembeli/ClaimMerch.dart';
 import 'package:reusemart_mobile/Login/sebelumLogin.dart';
 import 'package:reusemart_mobile/homePembeli.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -13,130 +13,118 @@ class ProfilePembeli extends StatefulWidget {
 }
 
 class _ProfilePembeliState extends State<ProfilePembeli> {
-    bool isLoading = false;
-    Map<String, dynamic>? profileData;
-    int _selectedIndex = 0;
+  bool isLoading = false;
+  Map<String, dynamic>? profileData;
+  int _selectedIndex = 0;
 
-    void _onItemTapped(int index) {
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+
+    if (index == 0) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => const HomePembeli()),
+      );
+    }
+    // Add more navigation if needed
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _getProfileData();
+  }
+
+  Future<void> _getProfileData() async {
+    setState(() {
+      isLoading = true;
+    });
+
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final token = prefs.getString('token');
+
+      if (token == null) {
+        throw Exception('Token tidak ditemukan');
+      }
+
+      final data = await PembeliClient.getData(token);
       setState(() {
-        _selectedIndex = index;
+        profileData = data ?? null;
+        isLoading = false;
       });
-
-      if (index == 0) {
-        Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => const HomePembeli()),
-        );
-      } else if (index == 1) {
-      // Navigator.push(
-      //   context,
-      //   MaterialPageRoute(builder: (context) => const MessagesView()),
-      // );
-      } else if (index == 2) {
-
-      }
-      else if (index == 3) {
-        // Navigator.push(
-        //   context,
-        //   MaterialPageRoute(builder: (context) => const ProfilePembeli()),
-        // );
-      }
+    } catch (e) {
+      setState(() {
+        isLoading = false;
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to load profile: $e')),
+      );
     }
+  }
 
-    @override
-    void initState() {
-        super.initState();
-        _getProfileData();
-    }
-
-    Future<void> _getProfileData() async {
-        setState(() {
-            isLoading = true; // set loading true saat mulai fetch
-        });
-
-        try {
-            final prefs = await SharedPreferences.getInstance();
-            final token = prefs.getString('token');
-
-            if (token == null) {
-                throw Exception('Token tidak ditemukan');
-            }
-
-            final data = await PembeliClient.getData(token);
-            print('Response data: $data');
-
-            setState(() {
-                if (data != null) {
-                    profileData = data; 
-                }else{
-                    profileData = null;
-                }
-                isLoading = false;
-            });
-        } catch (e) {
-            setState(() {
-                isLoading = false;
-            });
-            ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text('Failed to load profile: $e')),
-            );
-        }
-    }
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
-            title: const Text('Profile',
-                style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                  color: Color.fromARGB(221, 255, 255, 255),
-                )),
-            centerTitle: true,
-            automaticallyImplyLeading: false, 
-            backgroundColor: Color.fromARGB(255, 25, 151, 9),
+          title: const Text('Profile',
+              style: TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+                color: Color.fromARGB(221, 255, 255, 255),
+              )),
+          centerTitle: true,
+          automaticallyImplyLeading: false,
+          backgroundColor: Color.fromARGB(255, 25, 151, 9),
         ),
         bottomNavigationBar: NavigationBarTheme(
-        data: NavigationBarThemeData(
-          backgroundColor: Color.fromARGB(255, 25, 151, 9), // latar belakang
-          indicatorColor: Colors.transparent,
-          labelTextStyle: MaterialStateProperty.resolveWith((states) {
-            if (states.contains(MaterialState.selected)) {
-              return const TextStyle(color: Color.fromARGB(255, 255, 255, 255), fontWeight: FontWeight.bold);
-            }
-            return const TextStyle(color: Color.fromARGB(255, 255, 255, 255));
-          }),
-          iconTheme: MaterialStateProperty.resolveWith((states) {
-            if (states.contains(MaterialState.selected)) {
-              return const IconThemeData(color: Color.fromARGB(255, 255, 255, 255));
-            }
-            return const IconThemeData(color: Color.fromARGB(255, 255, 255, 255));
-          }),
+          data: NavigationBarThemeData(
+            backgroundColor: Color.fromARGB(255, 25, 151, 9),
+            indicatorColor: Colors.transparent,
+            labelTextStyle: MaterialStateProperty.resolveWith((states) {
+              if (states.contains(MaterialState.selected)) {
+                return const TextStyle(
+                    color: Color.fromARGB(255, 255, 255, 255),
+                    fontWeight: FontWeight.bold);
+              }
+              return const TextStyle(
+                  color: Color.fromARGB(255, 255, 255, 255));
+            }),
+            iconTheme: MaterialStateProperty.resolveWith((states) {
+              if (states.contains(MaterialState.selected)) {
+                return const IconThemeData(
+                    color: Color.fromARGB(255, 255, 255, 255));
+              }
+              return const IconThemeData(
+                  color: Color.fromARGB(255, 255, 255, 255));
+            }),
+          ),
+          child: NavigationBar(
+            selectedIndex: _selectedIndex,
+            onDestinationSelected: _onItemTapped,
+            destinations: const [
+              NavigationDestination(
+                icon: Icon(Icons.home),
+                label: 'Home',
+              ),
+              NavigationDestination(
+                icon: Icon(Icons.notifications),
+                label: 'Notifikasi',
+              ),
+              NavigationDestination(
+                icon: Icon(Icons.message),
+                label: 'History',
+              ),
+              NavigationDestination(
+                icon: Icon(Icons.person),
+                label: 'Profil',
+              ),
+            ],
+          ),
         ),
-      child: NavigationBar(
-        selectedIndex: _selectedIndex,
-        onDestinationSelected: _onItemTapped,
-        destinations: const [
-          NavigationDestination(
-            icon: Icon(Icons.home),
-            label: 'Home',
-          ),
-          NavigationDestination(
-            icon: Icon(Icons.notifications),
-            label: 'Notifikasi',
-          ),
-          NavigationDestination(
-            icon: Icon(Icons.message),
-            label: 'History',
-          ),
-          NavigationDestination(
-            icon: Icon(Icons.person),
-            label: 'Profil',
-          ),
-        ],
-      ),
-      ),
         backgroundColor: const Color.fromARGB(255, 255, 255, 255),
         body: Center(
           child: isLoading
@@ -144,53 +132,79 @@ class _ProfilePembeliState extends State<ProfilePembeli> {
               : profileData == null
                   ? const Text('Data tidak tersedia')
                   : Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 15),
-                        child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                            _buildProfilePicture(),
-                            const SizedBox(height: 20),
-                            _buildProfileField('Poin', profileData?['poin'].toString(), Icons.star_border),
-                            _buildProfileField('Username', profileData?['username'], Icons.person),
-                            
-                            const SizedBox(height: 20),
-                    
-                            ],
-                        ),
-                    )
+                      padding: const EdgeInsets.symmetric(horizontal: 15),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          _buildProfilePicture(),
+                          const SizedBox(height: 20),
+                          _buildProfileField('Poin', profileData?['poin'].toString(), Icons.star_border),
+                          _buildProfileField('Username', profileData?['username'], Icons.person),
+                          const SizedBox(height: 20),
+                          ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: const Color(0xFF009688),
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                            ),
+                            onPressed: () {
+                              if (profileData != null) {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => ClaimMerchPage(
+                                      idPembeli: profileData!['idPembeli'],
+                                      poin: profileData!['poin'],
+                                    ),
+                                  ),
+                                );
+                              }
+                            },
+                            child: const Text(
+                              'Claim Merchandise',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 18,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
         ),
       ),
     );
   }
 
-    Widget _buildProfilePicture() {
-        return Padding(
-            padding: const EdgeInsets.only(top:5),
-            child: Center(
-                child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                    CircleAvatar(
-                        radius: 80.0,
-                        backgroundImage: AssetImage('lib/assets/pp.png'),
-                    ),
-                    const SizedBox(height: 16),
-                    Text(
-                        '${profileData?['namaPembeli'] }',
-                        style: const TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold),
-                    ),
-                    const SizedBox(height: 3),
-                    Text(
-                        '${profileData?['email'] ?? 'Loading...'}',
-                        style: const TextStyle(fontSize: 16.0),
-                    ),
-                ],
-                ),
+  Widget _buildProfilePicture() {
+    return Padding(
+      padding: const EdgeInsets.only(top: 5),
+      child: Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            CircleAvatar(
+              radius: 80.0,
+              backgroundImage: AssetImage('lib/assets/pp.png'),
             ),
-        );
-    }
+            const SizedBox(height: 16),
+            Text(
+              '${profileData?['namaPembeli']}',
+              style: const TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 3),
+            Text(
+              '${profileData?['email'] ?? 'Loading...'}',
+              style: const TextStyle(fontSize: 16.0),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 
-    Widget _buildProfileField(String title, String? value, IconData iconData) {
+  Widget _buildProfileField(String title, String? value, IconData iconData) {
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 5),
       padding: const EdgeInsets.all(12),
@@ -237,7 +251,4 @@ class _ProfilePembeliState extends State<ProfilePembeli> {
       ),
     );
   }
-
-
-
 }

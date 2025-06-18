@@ -4,7 +4,7 @@ publish_to: 'none'
 version: 1.0.0+1
 
 environment:
-  sdk: ^3.7.2
+  sdk: ^3.8.0
 
 dependencies:
   flutter:
@@ -15,9 +15,13 @@ dependencies:
   firebase_core: ^3.13.1
   firebase_messaging: ^15.2.6
   flutter_local_notifications: ^17.0.0
-  firebase_analytics: ^11.4.6 
+  firebase_analytics: ^11.4.6
+  carousel_slider:
+    git:
+      url: https://github.com/serenader2014/flutter_carousel_slider.git
   animate_do: ^3.1.2
   page_transition: ^2.1.0
+
 
 
 dev_dependencies:

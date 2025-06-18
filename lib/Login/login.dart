@@ -69,7 +69,7 @@ class _LoginState extends State<Login> {
           await _saveToken(token);
           await PushNotifications.subscribeToUserTopic('hunter');
           showSnackBar('Login berhasil!');
-
+          Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const HomeHunter()));
         } else {
           showSnackBar('Jabatan tidak dikenali');
         }
