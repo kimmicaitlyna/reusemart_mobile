@@ -28,17 +28,12 @@ class _ProfileKurirState extends State<ProfileKurir> {
             MaterialPageRoute(builder: (context) => const HomeKurir()),
         );
       } else if (index == 1) {
-      // Navigator.push(
-      //   context,
-      //   MaterialPageRoute(builder: (context) => const MessagesView()),
-      // );
-      } else if (index == 2) {
         Navigator.push(
           context,
           MaterialPageRoute(builder: (context) => const HistoryPengiriman()),
         );
       }
-      else if (index == 3) {
+      else if (index == 2) {
         // Navigator.push(
         //   context,
         //   MaterialPageRoute(builder: (context) => const ProfileKurir()),
@@ -126,11 +121,7 @@ class _ProfileKurirState extends State<ProfileKurir> {
             label: 'Home',
           ),
           NavigationDestination(
-            icon: Icon(Icons.notifications),
-            label: 'Notifikasi',
-          ),
-          NavigationDestination(
-            icon: Icon(Icons.message),
+            icon: Icon(Icons.history),
             label: 'History',
           ),
           NavigationDestination(

@@ -39,18 +39,13 @@ class _HistoryPengirimanState extends State<HistoryPengiriman> {
           context,
           MaterialPageRoute(builder: (context) => const HomeKurir()),
       );
-    } else if (index == 1) {
-    // Navigator.push(
-    //   context,
-    //   MaterialPageRoute(builder: (context) => const MessagesView()),
-    // );
-    } else if (index == 2) {
+    }  else if (index == 1) {
       // Navigator.push(
       //   context,
       //   MaterialPageRoute(builder: (context) => const HistoryPengiriman()),
       // );
     }
-    else if (index == 3) {
+    else if (index == 2) {
       Navigator.push(
         context,
         MaterialPageRoute(builder: (context) => const ProfileKurir()),
@@ -147,11 +142,7 @@ class _HistoryPengirimanState extends State<HistoryPengiriman> {
                 label: 'Home',
               ),
               NavigationDestination(
-                icon: Icon(Icons.notifications),
-                label: 'Notifikasi',
-              ),
-              NavigationDestination(
-                icon: Icon(Icons.message),
+                icon: Icon(Icons.history),
                 label: 'History',
               ),
               NavigationDestination(
@@ -171,10 +162,13 @@ class _HistoryPengirimanState extends State<HistoryPengiriman> {
                 itemCount: historyData!['data'].length,
                 itemBuilder: (context, index) {
                   final item = historyList[index];
-                  String namaBarang = item['detail_transaksi_pembelian'] != null &&
-                      item['detail_transaksi_pembelian'].isNotEmpty
-                      ? item['detail_transaksi_pembelian'][0]['barang']['namaBarang']
-                      : '-';
+
+                  /////////////nama barang///////////
+                  List<dynamic> detailList = item['detail_transaksi_pembelian'] ?? [];
+                    String namaBarang = detailList.isNotEmpty
+                        ? detailList.map((detail) => detail['barang']['namaBarang']).join(', ')
+                        : '-';
+
                   return Card(
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(24),
