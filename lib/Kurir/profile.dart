@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:reusemart_mobile/Client/pegawaiClient.dart';
+import 'package:reusemart_mobile/Kurir/history.dart';
 import 'package:reusemart_mobile/Login/sebelumLogin.dart';
 import 'package:reusemart_mobile/homeKurir.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -17,33 +18,28 @@ class _ProfileKurirState extends State<ProfileKurir> {
     int _selectedIndex = 0;
 
     void _onItemTapped(int index) {
-        setState(() {
+      setState(() {
         _selectedIndex = index;
-        });
+      });
 
-        if (index == 0) {
+      if (index == 0) {
         Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => const HomeKurir()),
         );
-        } else if (index == 1) {
+      } else if (index == 1) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const HistoryPengiriman()),
+        );
+      }
+      else if (index == 2) {
         // Navigator.push(
         //   context,
-        //   MaterialPageRoute(builder: (context) => const MessagesView()),
+        //   MaterialPageRoute(builder: (context) => const ProfileKurir()),
         // );
-        } else if (index == 2) {
-        //   Navigator.push(
-        //     context,
-        //     MaterialPageRoute(builder: (context) => const ProfileKurir()),
-        //   );
-        }
-        else if (index == 3) {
-        //   Navigator.push(
-        //     context,
-        //     MaterialPageRoute(builder: (context) => const ProfileKurir()),
-        //   );
-        }
-  }
+      }
+    }
 
     @override
     void initState() {
@@ -97,13 +93,12 @@ class _ProfileKurirState extends State<ProfileKurir> {
                 )),
             centerTitle: true,
             automaticallyImplyLeading: false, 
-            backgroundColor: Color.fromARGB(255, 25, 151, 9)
-,
+            backgroundColor: Color.fromARGB(255, 25, 151, 9),
         ),
         bottomNavigationBar: NavigationBarTheme(
         data: NavigationBarThemeData(
           backgroundColor: Color.fromARGB(255, 25, 151, 9), // latar belakang
-        //   indicatorColor: const Color.fromARGB(255, 128, 181, 146), // warna highlight tab aktif
+          indicatorColor: Colors.transparent,
           labelTextStyle: MaterialStateProperty.resolveWith((states) {
             if (states.contains(MaterialState.selected)) {
               return const TextStyle(color: Color.fromARGB(255, 255, 255, 255), fontWeight: FontWeight.bold);
@@ -126,11 +121,7 @@ class _ProfileKurirState extends State<ProfileKurir> {
             label: 'Home',
           ),
           NavigationDestination(
-            icon: Icon(Icons.notifications),
-            label: 'Notifikasi',
-          ),
-          NavigationDestination(
-            icon: Icon(Icons.message),
+            icon: Icon(Icons.history),
             label: 'History',
           ),
           NavigationDestination(

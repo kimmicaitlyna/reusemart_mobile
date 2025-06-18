@@ -1,10 +1,13 @@
 import 'dart:convert';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:http/http.dart' as http;
 import 'dart:io';
 
 class PegawaiClient{
   // static const String baseUrl ='http://192.168.18.27/reusemart_mobile/public/api';
-  static const String baseUrl ='http://192.168.139.186:8000/api';
+  // static const String baseUrl ='http://192.168.108.121:8000/api';
+  static const String baseUrl ='https://reusmart-test.store/api';
+
   // static const String baseUrl ='http://127.0.0.1:8000/api';
   // static const String baseUrl ='http://10.0.2.2:8000/api';   //emulator
 
@@ -79,7 +82,7 @@ static Future<void> registerFcmToken(String authToken, String fcmToken) async {
 
   static Future<bool> logout(String authToken) async {
     final url = Uri.parse('$baseUrl/pegawai/logout');
-
+    
     try {
       final response = await http.post(
         url,
@@ -117,5 +120,83 @@ static Future<void> registerFcmToken(String authToken, String fcmToken) async {
     throw Exception('Gagal mengambil histori komisi');
   }
 }
+
+  static Future<Map<String, dynamic>?> getHistoryKurir(String authToken) async {
+    final url = Uri.parse('$baseUrl/getHistory');
+
+    try {
+      final response = await http.get(
+        url,
+        headers: {
+          "Authorization": "Bearer $authToken",
+          "Content-Type": "application/json",
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        print('Get data Response: $data');
+        return data;
+      } else {
+        final errorData = jsonDecode(response.body);
+        print('Get data failed: ${errorData['message'] ?? 'Unknown error'}');
+        return null;
+      }
+    } catch (e) {
+      throw Exception('Error: $e');
+    }
+  }
+
+  static Future<Map<String, dynamic>?> getPengiriman(String authToken) async {
+    final url = Uri.parse('$baseUrl/getPengiriman');
+
+    try {
+      final response = await http.get(
+        url,
+        headers: {
+          "Authorization": "Bearer $authToken",
+          "Content-Type": "application/json",
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        print('Get data Response: $data');
+        return data;
+      } else {
+        final errorData = jsonDecode(response.body);
+        print('Get data failed: ${errorData['message'] ?? 'Unknown error'}');
+        return null;
+      }
+    } catch (e) {
+      throw Exception('Error: $e');
+    }
+  }
+
+  static Future<Map<String, dynamic>?> updateStatus(String authToken, String noNota) async {
+    final url = Uri.parse('$baseUrl/updatePengiriman/$noNota');
+
+    try {
+      final response = await http.put(
+        url,
+        headers: {
+          "Authorization": "Bearer $authToken",
+          "Content-Type": "application/json",
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        print('Get data Response: $data');
+        return data;
+      } else {
+        final errorData = jsonDecode(response.body);
+        print('Get data failed: ${errorData['message'] ?? 'Unknown error'}');
+        return null;
+      }
+    } catch (e) {
+      throw Exception('Error: $e');
+    }
+  }
 
 }

@@ -19,6 +19,8 @@ dependencies:
   carousel_slider:
     git:
       url: https://github.com/serenader2014/flutter_carousel_slider.git
+  animate_do: ^3.1.2
+  page_transition: ^2.1.0
 
 
 
@@ -26,6 +28,9 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^5.0.0
+  intl: ^0.19.0
+  animate_do: ^3.0.0
+  page_transition: ^2.0.9
 
 flutter:
   uses-material-design: true
