@@ -1,4 +1,4 @@
-package P3L.reusemart
+package com.example.reusemart_mobile
 
 import io.flutter.embedding.android.FlutterActivity
 

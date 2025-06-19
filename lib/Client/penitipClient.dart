@@ -5,8 +5,8 @@ import 'dart:io';
 class PenitipClient{
   // static const String baseUrl ='http://192.168.18.27/reusemart_mobile/public/api';
   // static const String baseUrl ='http://192.168.108.121:8000/api';
-  static const String baseUrl ='https://reusmart-test.store/api';
-  // static const String baseUrl ='http://127.0.0.1:8000/api';
+  // static const String baseUrl ='https://reusmart-test.store/api';
+static const String baseUrl ='http://192.168.255.121:8000/api';
   // static const String baseUrl ='http://10.0.2.2:8000/api';
 
 
@@ -113,4 +113,59 @@ class PenitipClient{
       throw Exception('Error: $e');
     }
   }
+
+  static Future<bool> logout(String authToken) async {
+    final url = Uri.parse('$baseUrl/penitip/logout');
+    
+    try {
+      final response = await http.post(
+        url,
+        headers: {
+          "Authorization": "Bearer $authToken",
+          "Content-Type": "application/json",
+        },
+      );
+
+      if (response.statusCode == 200) {
+        return true;
+      } else {
+        return false;
+      }
+    } catch (e) {
+      throw Exception('Error: $e');
+    }
+  }
+
+  static Future<List<Map<String, dynamic>>?> getBarangByPenitip(String token, String idPenitip) async {
+  final url = Uri.parse('$baseUrl/transaksi-penitipan/penitip/$idPenitip');
+
+  try {
+    final response = await http.get(
+      url,
+      headers: {
+        "Authorization": "Bearer $token",
+        "Content-Type": "application/json",
+      },
+    );
+
+    if (response.statusCode == 200) {
+      final jsonData = jsonDecode(response.body);
+
+      if (jsonData['status'] == true && jsonData['data'] != null) {
+        print('Barang by Penitip: ${jsonData['data']}');
+        return List<Map<String, dynamic>>.from(jsonData['data']);
+      } else {
+        print('Gagal memuat barang: ${jsonData['message']}');
+        return null;
+      }
+    } else {
+      print('Response error: ${response.statusCode}');
+      return null;
+    }
+  } catch (e) {
+    print('Exception error: $e');
+    return null;
+  }
+}
+
 }

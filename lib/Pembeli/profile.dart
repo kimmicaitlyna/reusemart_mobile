@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:reusemart_mobile/Client/PembeliClient.dart';
-import 'package:reusemart_mobile/Pembeli/ClaimMerch.dart';
+import 'package:reusemart_mobile/Client/pembeliClient.dart';
 import 'package:reusemart_mobile/Login/sebelumLogin.dart';
-import 'package:reusemart_mobile/homePembeli.dart';
+import 'package:reusemart_mobile/Pembeli/ClaimMerch.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ProfilePembeli extends StatefulWidget {
-  const ProfilePembeli({super.key});
+  final VoidCallback? onLogout;
+  const ProfilePembeli({Key? key, this.onLogout}) : super(key: key);
+
 
   @override
   State<ProfilePembeli> createState() => _ProfilePembeliState();
@@ -15,21 +16,6 @@ class ProfilePembeli extends StatefulWidget {
 class _ProfilePembeliState extends State<ProfilePembeli> {
   bool isLoading = false;
   Map<String, dynamic>? profileData;
-  int _selectedIndex = 0;
-
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-
-    if (index == 0) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => const HomePembeli()),
-      );
-    }
-    // Add more navigation if needed
-  }
 
   @override
   void initState() {
@@ -46,177 +32,151 @@ class _ProfilePembeliState extends State<ProfilePembeli> {
       final prefs = await SharedPreferences.getInstance();
       final token = prefs.getString('token');
 
-      if (token == null) {
-        throw Exception('Token tidak ditemukan');
-      }
+      if (token == null) throw Exception('Token tidak ditemukan');
 
       final data = await PembeliClient.getData(token);
       setState(() {
-        profileData = data ?? null;
+        profileData = data ?? {};
         isLoading = false;
       });
     } catch (e) {
-      setState(() {
-        isLoading = false;
-      });
+      setState(() => isLoading = false);
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to load profile: $e')),
+        SnackBar(content: Text('Gagal memuat profil: $e')),
       );
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
+    return Container(
+      decoration: const BoxDecoration(
+        gradient: LinearGradient(
+          colors: [Color(0xFFE8F5E9), Color(0xFFC8E6C9)],
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+        ),
+      ),
       child: Scaffold(
-        appBar: AppBar(
-          title: const Text('Profile',
-              style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-                color: Color.fromARGB(221, 255, 255, 255),
-              )),
-          centerTitle: true,
-          automaticallyImplyLeading: false,
-          backgroundColor: Color.fromARGB(255, 25, 151, 9),
-        ),
-        bottomNavigationBar: NavigationBarTheme(
-          data: NavigationBarThemeData(
-            backgroundColor: Color.fromARGB(255, 25, 151, 9),
-            indicatorColor: Colors.transparent,
-            labelTextStyle: MaterialStateProperty.resolveWith((states) {
-              if (states.contains(MaterialState.selected)) {
-                return const TextStyle(
-                    color: Color.fromARGB(255, 255, 255, 255),
-                    fontWeight: FontWeight.bold);
-              }
-              return const TextStyle(
-                  color: Color.fromARGB(255, 255, 255, 255));
-            }),
-            iconTheme: MaterialStateProperty.resolveWith((states) {
-              if (states.contains(MaterialState.selected)) {
-                return const IconThemeData(
-                    color: Color.fromARGB(255, 255, 255, 255));
-              }
-              return const IconThemeData(
-                  color: Color.fromARGB(255, 255, 255, 255));
-            }),
-          ),
-          child: NavigationBar(
-            selectedIndex: _selectedIndex,
-            onDestinationSelected: _onItemTapped,
-            destinations: const [
-              NavigationDestination(
-                icon: Icon(Icons.home),
-                label: 'Home',
-              ),
-              NavigationDestination(
-                icon: Icon(Icons.notifications),
-                label: 'Notifikasi',
-              ),
-              NavigationDestination(
-                icon: Icon(Icons.message),
-                label: 'History',
-              ),
-              NavigationDestination(
-                icon: Icon(Icons.person),
-                label: 'Profil',
-              ),
-            ],
-          ),
-        ),
-        backgroundColor: const Color.fromARGB(255, 255, 255, 255),
-        body: Center(
-          child: isLoading
-              ? const CircularProgressIndicator()
-              : profileData == null
-                  ? const Text('Data tidak tersedia')
-                  : Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 15),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          _buildProfilePicture(),
-                          const SizedBox(height: 20),
-                          _buildProfileField('Poin', profileData?['poin'].toString(), Icons.star_border),
-                          _buildProfileField('Username', profileData?['username'], Icons.person),
-                          const SizedBox(height: 20),
-                          ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: const Color(0xFF009688),
-                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+        backgroundColor: Colors.transparent,
+        body: isLoading
+            ? const Center(child: CircularProgressIndicator())
+            : profileData == null
+                ? const Center(child: Text('Data tidak tersedia'))
+                : SingleChildScrollView(
+                    padding: const EdgeInsets.all(16),
+                    child: Column(
+                      children: [
+                        const SizedBox(height: 40),
+                        _buildProfilePicture(),
+                        const SizedBox(height: 20),
+                         _buildProfileField('ID Pembeli', profileData?['idPembeli'].toString(), Icons.badge_outlined),
+                        _buildProfileField('Username', profileData?['username'].toString(), Icons.person),
+                        _buildProfileField('Email', profileData?['email'].toString(), Icons.email),
+                        _buildProfileField('Poin', profileData?['poin'].toString(), Icons.star),
+                        const SizedBox(height: 20),
+                        ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: const Color(0xFF2E7D32),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
                             ),
-                            onPressed: () {
-                              if (profileData != null) {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => ClaimMerchPage(
-                                      idPembeli: profileData!['idPembeli'],
-                                      poin: profileData!['poin'],
-                                    ),
-                                  ),
-                                );
-                              }
-                            },
-                            child: const Text(
-                              'Claim Merchandise',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 18,
-                              ),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 24,
+                              vertical: 12,
                             ),
                           ),
-                        ],
-                      ),
+                          onPressed: () {
+                            if (profileData != null) {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => ClaimMerchPage(
+                                    idPembeli: profileData!['idPembeli'],
+                                    poin: profileData!['poin'],
+                                  ),
+                                ),
+                              );
+                            }
+                          },
+                          child: const Text(
+                            'Claim Merchandise',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 18,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 10),
+                        _buildLogoutButton(),
+                      ],
                     ),
-        ),
+                  ),
       ),
     );
   }
 
   Widget _buildProfilePicture() {
-    return Padding(
-      padding: const EdgeInsets.only(top: 5),
-      child: Center(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            CircleAvatar(
-              radius: 80.0,
-              backgroundImage: AssetImage('lib/assets/pp.png'),
+        return Padding(
+            padding: const EdgeInsets.only(top:5),
+            child: Center(
+                child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                   Container(
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black26,
+                            blurRadius: 12,
+                            spreadRadius: 2,
+                          ),
+                        ],
+                      ),
+                      child: CircleAvatar(
+                        radius: 60.0,
+                        backgroundImage: AssetImage('lib/assets/pp.png'),
+                        // backgroundImage: NetworkImage(imageUrl),
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    Text(
+                        '${profileData?['namaPembeli'] }',
+                        style: const TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(height: 3),
+                    Text(
+                        'Pembeli',
+                        style: const TextStyle(fontSize: 16.0),
+                    ),
+                ],
+                ),
             ),
-            const SizedBox(height: 16),
-            Text(
-              '${profileData?['namaPembeli']}',
-              style: const TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 3),
-            Text(
-              '${profileData?['email'] ?? 'Loading...'}',
-              style: const TextStyle(fontSize: 16.0),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
+        );
+    }
 
   Widget _buildProfileField(String title, String? value, IconData iconData) {
     return Container(
-      margin: const EdgeInsets.symmetric(vertical: 5),
+      margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: const Color(0xFFF7F7F7),
-        borderRadius: BorderRadius.circular(12),
+        color: Colors.white.withOpacity(0.95),
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: const Color.fromARGB(255, 112, 189, 114),
+            blurRadius: 8,
+            offset: const Offset(0, 4),
+          ),
+        ],
       ),
       child: Row(
         children: [
           Container(
             decoration: BoxDecoration(
-              color: Color.fromARGB(255, 25, 151, 9),
+              color: Color(0xFF2E7D32),
               borderRadius: BorderRadius.circular(8),
             ),
             padding: const EdgeInsets.all(10),
@@ -248,6 +208,56 @@ class _ProfilePembeliState extends State<ProfilePembeli> {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+   Widget _buildLogoutButton() {
+    return Container(
+      margin: const EdgeInsets.only(top: 20, bottom: 20),
+      decoration: BoxDecoration(
+        color: const Color(0xFF2E7D32),
+        borderRadius: BorderRadius.circular(30),
+      ),
+      child: TextButton.icon(
+        style: TextButton.styleFrom(
+          padding: const EdgeInsets.symmetric(horizontal: 32),
+        ),
+        onPressed: () async {
+          final prefs = await SharedPreferences.getInstance();
+          final token = prefs.getString('token');
+
+          if (token == null) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('Token tidak ditemukan')),
+            );
+            return;
+          }
+
+          final isLogout = await PembeliClient.logout(token);
+          if (isLogout == true) {
+            await prefs.remove('token');
+            if (widget.onLogout != null) {
+              widget.onLogout!(); // Trigger logout callback
+            } else {
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => const SebelumLogin()),
+              );
+            }
+          } else {
+            print("Gagal logout");
+          }
+        },
+        icon: const Icon(Icons.logout, color: Colors.white),
+        label: const Text(
+          'Logout',
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
       ),
     );
   }

@@ -5,8 +5,8 @@ import 'dart:io';
 class PembeliClient{
   // static const String baseUrl ='http://192.168.18.27/reusemart_mobile/public/api';
   // static const String baseUrl ='http://192.168.108.121:8000/api';
-  static const String baseUrl ='https://reusmart-test.store/api';
-  // static const String baseUrl ='http://127.0.0.1:8000/api';
+  // static const String baseUrl ='https://reusmart-test.store/api';
+  static const String baseUrl ='http://192.168.255.121:8000/api';
   // static const String baseUrl ='http://10.0.2.2:8000/api';
   
 
@@ -74,6 +74,49 @@ static Future<void> registerFcmToken(String authToken, String fcmToken) async {
       }
     } catch (e) {
       throw Exception('Error: $e');
+    }
+  }
+
+  static Future<bool> logout(String authToken) async {
+    final url = Uri.parse('$baseUrl/pembeli/logout');
+    
+    try {
+      final response = await http.post(
+        url,
+        headers: {
+          "Authorization": "Bearer $authToken",
+          "Content-Type": "application/json",
+        },
+      );
+
+      if (response.statusCode == 200) {
+        return true;
+      } else {
+        return false;
+      }
+    } catch (e) {
+      throw Exception('Error: $e');
+    }
+  }
+
+  static Future<List<Map<String, dynamic>>?> getRiwayatTransaksi(String token) async {
+    final response = await http.get(
+      Uri.parse('$baseUrl/pembeli/history'), // sesuaikan route jika berbeda
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Accept': 'application/json',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> json = jsonDecode(response.body);
+      if (json['status'] == true) {
+        return List<Map<String, dynamic>>.from(json['data']);
+      } else {
+        return [];
+      }
+    } else {
+      throw Exception('Gagal mengambil riwayat transaksi');
     }
   }
 

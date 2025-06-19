@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:reusemart_mobile/Client/pembeliClient.dart'; // Pastikan ini sudah benar
+import 'package:reusemart_mobile/Client/penitipClient.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:intl/intl.dart';
 
-class HistoryPembelian extends StatefulWidget {
-  const HistoryPembelian({super.key});
+class HistoryPenitipan extends StatefulWidget {
+  const HistoryPenitipan({super.key});
 
   @override
-  State<HistoryPembelian> createState() => _HistoryPembelianState();
+  State<HistoryPenitipan> createState() => _HistoryPenitipanState();
 }
 
-class _HistoryPembelianState extends State<HistoryPembelian> {
+class _HistoryPenitipanState extends State<HistoryPenitipan> {
   bool isLoading = false;
   List<Map<String, dynamic>> historyList = [];
 
@@ -31,7 +31,15 @@ class _HistoryPembelianState extends State<HistoryPembelian> {
 
       if (token == null) throw Exception('Token tidak ditemukan');
 
-      final data = await PembeliClient.getRiwayatTransaksi(token);
+      // Ambil data profil penitip
+      final profileData = await PenitipClient.getData(token);
+      final idPenitip = profileData?['idPenitip'];
+
+      if (idPenitip == null) throw Exception('ID Penitip tidak ditemukan');
+
+      // Ambil riwayat penitipan berdasarkan ID Penitip
+      final data = await PenitipClient.getBarangByPenitip(token, idPenitip);
+
       setState(() {
         historyList = data ?? [];
         isLoading = false;
@@ -42,7 +50,8 @@ class _HistoryPembelianState extends State<HistoryPembelian> {
         SnackBar(content: Text('Gagal memuat data: $e')),
       );
     }
-  }
+}
+
 
   String formatDateString(String? dateString) {
     if (dateString == null || dateString.isEmpty) return '-';
@@ -72,7 +81,7 @@ class _HistoryPembelianState extends State<HistoryPembelian> {
           : historyList.isEmpty
               ? const Center(
                   child: Text(
-                    'Tidak ada riwayat pembelian.',
+                    'Tidak ada riwayat penitipan.',
                     style: TextStyle(fontSize: 16),
                   ),
                 )
@@ -81,7 +90,8 @@ class _HistoryPembelianState extends State<HistoryPembelian> {
                   itemCount: historyList.length,
                   itemBuilder: (context, index) {
                     final item = historyList[index];
-                    final detailList = item['detail_transaksi_pembelian'] ?? [];
+                    final detailList = item['detail_transaksi_penitipan'] ?? [];
+
 
                     String namaBarang = detailList.isNotEmpty
                         ? detailList
@@ -110,11 +120,11 @@ class _HistoryPembelianState extends State<HistoryPembelian> {
                           children: [
                             Row(
                               children: [
-                                const Icon(Icons.receipt, color: Color(0xFF2E7D32)),
+                                const Icon(Icons.inventory, color: Color(0xFF2E7D32)),
                                 const SizedBox(width: 8),
                                 Expanded(
                                   child: Text(
-                                    "${item['noNota'] ?? '-'} • $namaBarang",
+                                    "${item['idTransaksiPenitipan'] ?? '-'} • $namaBarang",
                                     style: const TextStyle(
                                       fontWeight: FontWeight.bold,
                                       fontSize: 18,
@@ -130,16 +140,11 @@ class _HistoryPembelianState extends State<HistoryPembelian> {
                               style: const TextStyle(fontSize: 15),
                             ),
                             Text(
-                              "Tanggal Pembelian: ${formatDateString(item['tanggalWaktuPembelian'])}",
-                              style: const TextStyle(fontSize: 15),
-                            ),
-                            
-                            Text(
-                              "Nama Kurir: ${item['pegawai3']?['namaPegawai'] ?? '-'}",
+                              "Tanggal Penitipan: ${formatDateString(item['tanggalPenitipan'])}",
                               style: const TextStyle(fontSize: 15),
                             ),
                             Text(
-                              "Status: ${item['status'] ?? '-'}",
+                              "Tanggal Selesai: ${formatDateString(item['tanggalPenitipanSelesai'])}",
                               style: const TextStyle(fontSize: 15),
                             ),
                           ],

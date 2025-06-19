@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:animate_do/animate_do.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:reusemart_mobile/Login/Login.dart';
+import 'package:reusemart_mobile/Login/barang.dart';
 
 class SebelumLogin extends StatefulWidget {
   const SebelumLogin({Key? key}) : super(key: key);
@@ -133,18 +134,26 @@ class SebelumLoginState extends State<SebelumLogin> with TickerProviderStateMixi
                     SizedBox(height: 20),
                     FadeInUp(
                       duration: Duration(milliseconds: 1700),
-                      child: Container(
-                        height: 50,
-                        decoration: BoxDecoration(
-                          border: Border.all(color: Colors.white),
-                          borderRadius: BorderRadius.circular(50),
-                        ),
-                        child: Center(
-                          child: Text(
-                            "Telusuri Barang",
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
+                      child: InkWell(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => const Barang()),
+                          );
+                        },
+                        child: Container(
+                          height: 50,
+                          decoration: BoxDecoration(
+                            border: Border.all(color: Colors.white),
+                            borderRadius: BorderRadius.circular(50),
+                          ),
+                          child: Center(
+                            child: Text(
+                              "Telusuri Barang",
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
                           ),
                         ),

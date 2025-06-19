@@ -148,7 +148,7 @@ class _LoginState extends State<Login> {
         title: const Text('Login', style: TextStyle(fontSize: 26, color: Colors.black)),
         centerTitle: true,
       ),
-      backgroundColor: Colors.white,
+      backgroundColor: Color(0xFFC8E6C9),
       body: SafeArea(
         child: Form(
           key: _formKey,

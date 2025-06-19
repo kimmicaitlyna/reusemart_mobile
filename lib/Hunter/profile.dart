@@ -57,48 +57,48 @@ class _ProfileHunterState extends State<ProfileHunter> {
   }
 
   @override
+
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        appBar: AppBar(
-          title: const Text('Profile Hunter',
-              style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-                color: Color.fromARGB(221, 255, 255, 255),
-              )),
-          centerTitle: true,
-          automaticallyImplyLeading: false,
-          backgroundColor: Color.fromARGB(255, 25, 151, 9),
-        ),
-        backgroundColor: const Color.fromARGB(255, 255, 255, 255),
-        body: Center(
-          child: isLoading
-              ? const CircularProgressIndicator()
-              : profileData == null
-                  ? const Text('Data tidak tersedia atau bukan Hunter')
-                  : SingleChildScrollView(
-                      padding: const EdgeInsets.symmetric(horizontal: 15),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          _buildProfilePicture(),
-                          const SizedBox(height: 20),
-                          _buildProfileField('ID Pegawai', profileData?['idPegawai'], Icons.badge_outlined),
-                          _buildProfileField('Username', profileData?['username'], Icons.person),
-                          _buildProfileField('Tanggal Lahir', profileData?['tanggalLahir'], Icons.calendar_month),
-                          _buildProfileField('Komisi', profileData?['dompet']?['saldo']?.toString(), Icons.monetization_on),
-                          const SizedBox(height: 20),
-                          _buildLogoutButton(),
-                        ],
+        body: Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              colors: [Color(0xFFE8F5E9), Color(0xFFC8E6C9)],
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+            ),
+          ),
+          child: Center(
+            child: isLoading
+                ? const CircularProgressIndicator()
+                : profileData == null
+                    ? const Text('Data tidak tersedia atau bukan Hunter')
+                    : SingleChildScrollView(
+                        padding: const EdgeInsets.symmetric(horizontal: 15),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const SizedBox(height: 20),
+                            _buildProfilePicture(),
+                            const SizedBox(height: 5),
+                            _buildProfileField('ID Pegawai', profileData?['idPegawai'], Icons.badge_outlined),
+                            _buildProfileField('Username', profileData?['username'], Icons.person),
+                            _buildProfileField('Tanggal Lahir', profileData?['tanggalLahir'], Icons.calendar_month),
+                            _buildProfileField('Komisi', profileData?['dompet']?['saldo']?.toString(), Icons.monetization_on),
+                            const SizedBox(height: 5),
+                            _buildLogoutButton(),
+                          ],
+                        ),
                       ),
-                    ),
+          ),
         ),
-      ),
+      )
     );
   }
 
   // Profile picture from Laravel public folder
+
   Widget _buildProfilePicture() {
     // Replace with your server's IP/domain and image path
     const imageUrl = 'http://192.168.139.186:8000/k19.jpg';
@@ -108,10 +108,23 @@ class _ProfileHunterState extends State<ProfileHunter> {
       child: Center(
         child: Column(
           mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            CircleAvatar(
-              radius: 80.0,
-              backgroundImage: NetworkImage(imageUrl), // Use network image
+          children: [
+            Container(
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black26,
+                    blurRadius: 12,
+                    spreadRadius: 2,
+                  ),
+                ],
+              ),
+              child: CircleAvatar(
+                radius: 60.0,
+                backgroundImage: AssetImage('lib/assets/pp.png'),
+                // backgroundImage: NetworkImage(imageUrl),
+              ),
             ),
             const SizedBox(height: 16),
             Text(
@@ -119,9 +132,9 @@ class _ProfileHunterState extends State<ProfileHunter> {
               style: const TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 3),
-            Text(
+            const Text(
               'Hunter', // Jabatan Hunter
-              style: const TextStyle(fontSize: 16.0),
+              style: TextStyle(color: Color.fromARGB(179, 0, 0, 0), fontSize: 16.0),
             ),
           ],
         ),
@@ -131,17 +144,24 @@ class _ProfileHunterState extends State<ProfileHunter> {
 
   Widget _buildProfileField(String title, String? value, IconData iconData) {
     return Container(
-      margin: const EdgeInsets.symmetric(vertical: 5),
+      margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: const Color(0xFFF7F7F7),
-        borderRadius: BorderRadius.circular(12),
+        color: Colors.white.withOpacity(0.95),
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: const Color.fromARGB(255, 112, 189, 114),
+            blurRadius: 8,
+            offset: const Offset(0, 4),
+          ),
+        ],
       ),
       child: Row(
         children: [
           Container(
             decoration: BoxDecoration(
-              color: Color.fromARGB(255, 25, 151, 9),
+              color: Color(0xFF2E7D32),
               borderRadius: BorderRadius.circular(8),
             ),
             padding: const EdgeInsets.all(10),
@@ -181,10 +201,10 @@ class _ProfileHunterState extends State<ProfileHunter> {
     return Container(
       margin: const EdgeInsets.only(top: 20, bottom: 20),
       decoration: BoxDecoration(
-        color: Color.fromARGB(255, 25, 151, 9),
+        color: const Color(0xFF2E7D32),
         borderRadius: BorderRadius.circular(30),
       ),
-      child: TextButton(
+      child: TextButton.icon(
         style: TextButton.styleFrom(
           padding: const EdgeInsets.symmetric(horizontal: 32),
         ),
@@ -203,15 +223,19 @@ class _ProfileHunterState extends State<ProfileHunter> {
           if (isLogout == true) {
             await prefs.remove('token');
             if (widget.onLogout != null) {
-              widget.onLogout!(); // This will trigger setState in HomeHunter and return to home
+              widget.onLogout!(); // Trigger logout callback
             } else {
-              Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const SebelumLogin()));
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => const SebelumLogin()),
+              );
             }
           } else {
-            print("gagal logout");
+            print("Gagal logout");
           }
         },
-        child: const Text(
+        icon: const Icon(Icons.logout, color: Colors.white),
+        label: const Text(
           'Logout',
           style: TextStyle(
             color: Colors.white,

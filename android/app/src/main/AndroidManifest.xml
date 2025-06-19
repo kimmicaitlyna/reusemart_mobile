@@ -45,9 +45,8 @@
     </queries>
 </manifest> -->
 
-
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="P3L.reusemart">
+    package="com.example.reusemart_mobile">
 
     <!-- Permission akses internet -->
     <uses-permission android:name="android.permission.INTERNET" />

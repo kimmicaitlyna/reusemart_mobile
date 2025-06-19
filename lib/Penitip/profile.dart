@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:reusemart_mobile/Client/PenitipClient.dart';
+import 'package:reusemart_mobile/Client/penitipClient.dart';
 // import 'package:reusemart_mobile/Penitip/history.dart';
 import 'package:reusemart_mobile/Login/sebelumLogin.dart';
 import 'package:reusemart_mobile/homePenitip.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ProfilePenitip extends StatefulWidget {
-  const ProfilePenitip({super.key});
+  final VoidCallback? onLogout;
+  const ProfilePenitip({Key? key, this.onLogout}) : super(key: key);
+
 
   @override
   State<ProfilePenitip> createState() => _ProfilePenitipState();
@@ -16,32 +18,6 @@ class _ProfilePenitipState extends State<ProfilePenitip> {
     bool isLoading = false;
     Map<String, dynamic>? profileData;
     int _selectedIndex = 0;
-
-    void _onItemTapped(int index) {
-      setState(() {
-        _selectedIndex = index;
-      });
-
-      if (index == 0) {
-        Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => const HomePenitip()),
-        );
-      } else if (index == 1) {
-      // Navigator.push(
-      //   context,
-      //   MaterialPageRoute(builder: (context) => const MessagesView()),
-      // );
-      } else if (index == 2) {
-
-      }
-      else if (index == 3) {
-        // Navigator.push(
-        //   context,
-        //   MaterialPageRoute(builder: (context) => const ProfilePenitip()),
-        // );
-      }
-    }
 
     @override
     void initState() {
@@ -86,79 +62,42 @@ class _ProfilePenitipState extends State<ProfilePenitip> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        appBar: AppBar(
-            title: const Text('Profile',
-                style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                  color: Color.fromARGB(221, 255, 255, 255),
-                )),
-            centerTitle: true,
-            automaticallyImplyLeading: false, 
-            backgroundColor: Color.fromARGB(255, 25, 151, 9),
-        ),
-        bottomNavigationBar: NavigationBarTheme(
-        data: NavigationBarThemeData(
-          backgroundColor: Color.fromARGB(255, 25, 151, 9), // latar belakang
-          indicatorColor: Colors.transparent,
-          labelTextStyle: MaterialStateProperty.resolveWith((states) {
-            if (states.contains(MaterialState.selected)) {
-              return const TextStyle(color: Color.fromARGB(255, 255, 255, 255), fontWeight: FontWeight.bold);
-            }
-            return const TextStyle(color: Color.fromARGB(255, 255, 255, 255));
-          }),
-          iconTheme: MaterialStateProperty.resolveWith((states) {
-            if (states.contains(MaterialState.selected)) {
-              return const IconThemeData(color: Color.fromARGB(255, 255, 255, 255));
-            }
-            return const IconThemeData(color: Color.fromARGB(255, 255, 255, 255));
-          }),
-        ),
-      child: NavigationBar(
-        selectedIndex: _selectedIndex,
-        onDestinationSelected: _onItemTapped,
-        destinations: const [
-          NavigationDestination(
-            icon: Icon(Icons.home),
-            label: 'Home',
+body: Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              colors: [Color(0xFFE8F5E9), Color(0xFFC8E6C9)],
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+            ),
           ),
-          NavigationDestination(
-            icon: Icon(Icons.notifications),
-            label: 'Notifikasi',
-          ),
-          NavigationDestination(
-            icon: Icon(Icons.message),
-            label: 'History',
-          ),
-          NavigationDestination(
-            icon: Icon(Icons.person),
-            label: 'Profil',
-          ),
-        ],
-      ),
-      ),
-        backgroundColor: const Color.fromARGB(255, 255, 255, 255),
-        body: Center(
+        child: Center(
           child: isLoading
               ? const CircularProgressIndicator()
               : profileData == null
                   ? const Text('Data tidak tersedia')
                   : Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 15),
+                        child: SingleChildScrollView(
                         child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
+                            const SizedBox(height: 20),
                             _buildProfilePicture(),
                             const SizedBox(height: 20),
+                            _buildProfileField('ID Penitip', profileData?['idPenitip'].toString(), Icons.badge_outlined),
+                            _buildProfileField('Username', profileData?['username'].toString(), Icons.person),
+                            _buildProfileField('Email', profileData?['email'].toString(), Icons.email),
+                            _buildProfileField('Alamat', profileData?['alamat'].toString(), Icons.share_location_outlined),
                             _buildProfileField('Poin', profileData?['poin'].toString(), Icons.star_border),
                             _buildProfileField('Saldo', profileData?['dompet']?['saldo'].toString(), Icons.money_off_csred_outlined),
-                            
                             const SizedBox(height: 20),
-                    
+                            _buildLogoutButton()
                             ],
                         ),
+                          )
                     )
         ),
+      ),
       ),
     );
   }
@@ -169,10 +108,23 @@ class _ProfilePenitipState extends State<ProfilePenitip> {
             child: Center(
                 child: Column(
                 mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                    CircleAvatar(
-                        radius: 80.0,
+                children: [
+                   Container(
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black26,
+                            blurRadius: 12,
+                            spreadRadius: 2,
+                          ),
+                        ],
+                      ),
+                      child: CircleAvatar(
+                        radius: 60.0,
                         backgroundImage: AssetImage('lib/assets/pp.png'),
+                        // backgroundImage: NetworkImage(imageUrl),
+                      ),
                     ),
                     const SizedBox(height: 16),
                     Text(
@@ -181,7 +133,7 @@ class _ProfilePenitipState extends State<ProfilePenitip> {
                     ),
                     const SizedBox(height: 3),
                     Text(
-                        '${profileData?['email'] ?? 'Email Belum Terverifikasi'}',
+                        'Penitip',
                         style: const TextStyle(fontSize: 16.0),
                     ),
                 ],
@@ -192,17 +144,24 @@ class _ProfilePenitipState extends State<ProfilePenitip> {
 
     Widget _buildProfileField(String title, String? value, IconData iconData) {
     return Container(
-      margin: const EdgeInsets.symmetric(vertical: 5),
+      margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: const Color(0xFFF7F7F7),
-        borderRadius: BorderRadius.circular(12),
+        color: Colors.white.withOpacity(0.95),
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: const Color.fromARGB(255, 112, 189, 114),
+            blurRadius: 8,
+            offset: const Offset(0, 4),
+          ),
+        ],
       ),
       child: Row(
         children: [
           Container(
             decoration: BoxDecoration(
-              color: Color.fromARGB(255, 25, 151, 9),
+              color: Color(0xFF2E7D32),
               borderRadius: BorderRadius.circular(8),
             ),
             padding: const EdgeInsets.all(10),
@@ -234,6 +193,58 @@ class _ProfilePenitipState extends State<ProfilePenitip> {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildLogoutButton() {
+    return Container(
+      margin: const EdgeInsets.only(top: 20, bottom: 20),
+      decoration: BoxDecoration(
+        color: const Color(0xFF2E7D32),
+        borderRadius: BorderRadius.circular(30),
+      ),
+      child: TextButton.icon(
+        style: TextButton.styleFrom(
+          padding: const EdgeInsets.symmetric(horizontal: 32),
+        ),
+        onPressed: () async {
+          final prefs = await SharedPreferences.getInstance();
+          final token = prefs.getString('token');
+          print('Token from SharedPreferences: $token');
+
+
+          if (token == null) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('Token tidak ditemukan')),
+            );
+            return;
+          }
+
+          final isLogout = await PenitipClient.logout(token);
+          if (isLogout == true) {
+            await prefs.remove('token');
+            if (widget.onLogout != null) {
+              widget.onLogout!(); // Trigger logout callback
+            } else {
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => const SebelumLogin()),
+              );
+            }
+          } else {
+            print("Gagal logout");
+          }
+        },
+        icon: const Icon(Icons.logout, color: Colors.white),
+        label: const Text(
+          'Logout',
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
       ),
     );
   }
