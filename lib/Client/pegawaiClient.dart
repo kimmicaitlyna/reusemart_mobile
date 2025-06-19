@@ -4,7 +4,7 @@ import 'dart:io';
 
 class PegawaiClient{
   // static const String baseUrl ='http://192.168.18.27/reusemart_mobile/public/api';
-  static const String baseUrl ='http://192.168.139.186:8000/api';
+  static const String baseUrl ='http://192.168.7.109:8000/api';
   // static const String baseUrl ='http://127.0.0.1:8000/api';
   // static const String baseUrl ='http://10.0.2.2:8000/api';   //emulator
 

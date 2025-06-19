@@ -14,6 +14,7 @@ class ClaimMerchPage extends StatefulWidget {
 
 class _ClaimMerchPageState extends State<ClaimMerchPage> {
   late Future<List<Map<String, dynamic>>> _merchFuture;
+  final String baseUrl = 'http://192.168.7.109:8000/';
 
   @override
   void initState() {
@@ -59,7 +60,7 @@ class _ClaimMerchPageState extends State<ClaimMerchPage> {
 
     try {
       final response = await http.post(
-        Uri.parse('http://192.168.139.186:8000/api/claim-merchandise'),
+        Uri.parse('http://192.168.7.109:8000/api/store/claim'),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode(body),
       );
@@ -86,26 +87,27 @@ class _ClaimMerchPageState extends State<ClaimMerchPage> {
   }
 
   String _getImageForMerch(String id) {
-    if (id == "M1") {
-      return 'http://192.168.139.186:8000/penMerch.jpg';
-    } else if (id == "M2") {
-      return 'http://192.168.139.186:8000/stikerMerch.jpg';
-    } else if (id == "M3") {
-      return 'http://192.168.139.186:8000/mugMerch.jpg';
-    } else if (id == "M4") {
-      return 'http://192.168.139.186:8000/topiMerch.jpg';
-    } else if (id == "M5") {
-      return 'http://192.168.139.186:8000/tumblerMerch.jpg';
-    } else if (id == "M6") {
-      return 'http://192.168.139.186:8000/kaosMerch.jpg';
-    } else if (id == "M7") {
-      return 'http://192.168.139.186:8000/jamMerch.jpg';
-    } else if (id == "M8") {
-      return 'http://192.168.139.186:8000/tasMech.jpg';
-    } else if (id == "M9") {
-      return 'http://192.168.139.186:8000/payungMerch.jpg';
-    } else {
-      return 'http://192.168.139.186:8000/k19.jpg';
+    switch (id) {
+      case "M1":
+        return '${baseUrl}penMerch.jpg';
+      case "M2":
+        return '${baseUrl}stikerMerch.jpg';
+      case "M3":
+        return '${baseUrl}mugMerch.jpg';
+      case "M4":
+        return '${baseUrl}topiMerch.jpg';
+      case "M5":
+        return '${baseUrl}tumblerMerch.jpg';
+      case "M6":
+        return '${baseUrl}kaosMerch.jpg';
+      case "M7":
+        return '${baseUrl}jamMerch.jpg';
+      case "M8":
+        return '${baseUrl}tasMech.jpg';
+      case "M9":
+        return '${baseUrl}payungMerch.jpg';
+      default:
+        return '${baseUrl}k19.jpg';
     }
   }
 
@@ -127,75 +129,90 @@ class _ClaimMerchPageState extends State<ClaimMerchPage> {
           }
           final merchList = snapshot.data!;
           return GridView.builder(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.all(24),
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
-              crossAxisSpacing: 16,
-              mainAxisSpacing: 16,
-              childAspectRatio: 0.85,
+              crossAxisCount: 1,
+              crossAxisSpacing: 24,
+              mainAxisSpacing: 24,
+              childAspectRatio: 0.7, // More vertical space for responsiveness
             ),
             itemCount: merchList.length,
             itemBuilder: (context, index) {
               final merch = merchList[index];
               return Card(
-                elevation: 6,
+                elevation: 8,
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: BorderRadius.circular(18),
                 ),
                 child: Padding(
-                  padding: const EdgeInsets.all(10),
+                  padding: const EdgeInsets.all(18),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Container(
-                        height: 90,
-                        width: double.infinity,
-                        decoration: BoxDecoration(
-                          color: const Color(0xFFE0E0E0),
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: Center(
-                          child: Image.network(
-                            _getImageForMerch(merch['idMerchandise']),
-                            fit: BoxFit.contain,
-                            height: 60,
-                            errorBuilder: (c, e, s) => const Text(
-                              'images[0]',
-                              style: TextStyle(
-                                color: Color(0xFF009688),
-                                fontWeight: FontWeight.bold,
-                                fontSize: 22,
+                      Flexible(
+                        flex: 4,
+                        child: SizedBox(
+                          width: double.infinity,
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(12),
+                            child: Image.network(
+                              _getImageForMerch(merch['idMerchandise']),
+                              fit: BoxFit.cover,
+                              height: 160,
+                              errorBuilder: (c, e, s) => const Center(
+                                child: Text(
+                                  'images[0]',
+                                  style: TextStyle(
+                                    color: Color(0xFF009688),
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 22,
+                                  ),
+                                ),
                               ),
                             ),
                           ),
                         ),
                       ),
-                      const SizedBox(height: 8),
-                      Text(
-                        merch['nama'] ?? '',
-                        style: const TextStyle(
-                          color: Color(0xFF009688),
-                          fontWeight: FontWeight.bold,
-                          fontSize: 20,
+                      const SizedBox(height: 12),
+                      Flexible(
+                        flex: 3,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              merch['nama'] ?? '',
+                              style: const TextStyle(
+                                color: Color(0xFF009688),
+                                fontWeight: FontWeight.bold,
+                                fontSize: 22,
+                              ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                            const SizedBox(height: 4),
+                            Text(
+                              'harga: ${merch['harga']} poin',
+                              style: const TextStyle(
+                                color: Colors.black,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16,
+                              ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                            Text(
+                              'stock : ${merch['jumlahSatuan']}',
+                              style: const TextStyle(
+                                color: Colors.black87,
+                                fontSize: 15,
+                              ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ],
                         ),
                       ),
-                      const SizedBox(height: 4),
-                      Text(
-                        'harga: ${merch['harga']} poin',
-                        style: const TextStyle(
-                          color: Colors.black,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 15,
-                        ),
-                      ),
-                      Text(
-                        'stock : ${merch['jumlahSatuan']}',
-                        style: const TextStyle(
-                          color: Colors.black87,
-                          fontSize: 14,
-                        ),
-                      ),
-                      const Spacer(),
+                      const SizedBox(height: 10),
                       SizedBox(
                         width: double.infinity,
                         child: ElevatedButton(
@@ -204,6 +221,7 @@ class _ClaimMerchPageState extends State<ClaimMerchPage> {
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(8),
                             ),
+                            padding: const EdgeInsets.symmetric(vertical: 14),
                           ),
                           onPressed: () => _claimMerchandise(merch),
                           child: const Text(
@@ -211,7 +229,7 @@ class _ClaimMerchPageState extends State<ClaimMerchPage> {
                             style: TextStyle(
                               color: Colors.white,
                               fontWeight: FontWeight.bold,
-                              fontSize: 16,
+                              fontSize: 18,
                             ),
                           ),
                         ),
