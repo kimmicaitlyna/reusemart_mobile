@@ -7,7 +7,7 @@ class PegawaiClient{
   // static const String baseUrl ='http://192.168.18.27/reusemart_mobile/public/api';
   // static const String baseUrl ='http://192.168.108.121:8000/api';
   // static const String baseUrl ='https://reusmart-test.store/api';
-static const String baseUrl ='http://192.168.255.121:8000/api';
+  static const String baseUrl ='http://192.168.18.27:8000/api';
   // static const String baseUrl ='http://127.0.0.1:8000/api';
   // static const String baseUrl ='http://10.0.2.2:8000/api';   //emulator
 

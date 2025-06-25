@@ -50,7 +50,6 @@
 
     <!-- Permission akses internet -->
     <uses-permission android:name="android.permission.INTERNET" />
-
     <!-- Jika target SDK >= 33, butuh permission ini -->
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 

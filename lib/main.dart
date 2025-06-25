@@ -27,18 +27,7 @@ import 'firebase_options.dart';
 // }
 
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-  try {
-    if (Firebase.apps.isEmpty) {
-      await Firebase.initializeApp(
-        options: DefaultFirebaseOptions.currentPlatform,
-      );
-    }
-  } catch (e) {
-    // Optionally log or ignore duplicate-app errors
-    if (!e.toString().contains('A Firebase App named "[DEFAULT]" already exists')) {
-      rethrow;
-    }
-  }
+  await Firebase.initializeApp();
   print('Handling a background message: ${message.messageId}');
   PushNotifications.showNotification(message);
 }
@@ -46,19 +35,12 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  try {
-    if (Firebase.apps.isEmpty) {
-      await Firebase.initializeApp(
-        options: DefaultFirebaseOptions.currentPlatform,
-      );
-    }
-  } catch (e) {
-    // Optionally log or ignore duplicate-app errors
-    if (!e.toString().contains('A Firebase App named "[DEFAULT]" already exists')) {
-      rethrow;
-    }
-  }
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   await PushNotifications.init();
+  // Listen to bg notification
+  // FirebaseMessaging.onBackgroundMessage(_firebaseBackgroundMessage);
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
   runApp(const MainApp());
 }
