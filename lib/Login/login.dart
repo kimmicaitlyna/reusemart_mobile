@@ -28,6 +28,7 @@ class _LoginState extends State<Login> {
 
   Future<String?> getFcmToken() async {
     try {
+      await FirebaseMessaging.instance.deleteToken();
       String? token = await FirebaseMessaging.instance.getToken();
       print('FCM Token: $token');
       return token;
@@ -106,9 +107,6 @@ class _LoginState extends State<Login> {
 
         final prefs = await SharedPreferences.getInstance();
         await prefs.setString('idPenitip', penitip['idPenitip']);
-            await prefs.setString('namaPenitip', penitip['namaPenitip'] ?? 'Penitip'); // 🟢 Tambahan penting
-            print('SAVED idPenitip: ${penitip['idPenitip']}');
-print('SAVED namaPenitip: ${penitip['namaPenitip']}');
 
         showSnackBar('Login berhasil!');
         Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const HomePenitip()));

@@ -116,7 +116,7 @@ class _ClaimMerchPageState extends State<ClaimMerchPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Claim Merchandise'),
-        backgroundColor: const Color(0xFF009688),
+        backgroundColor:  Color(0xFF2E7D32),
       ),
       body: FutureBuilder<List<Map<String, dynamic>>>(
         future: _merchFuture,
@@ -163,7 +163,7 @@ class _ClaimMerchPageState extends State<ClaimMerchPage> {
                                 child: Text(
                                   'images[0]',
                                   style: TextStyle(
-                                    color: Color(0xFF009688),
+                                    color: Color(0xFF2E7D32),
                                     fontWeight: FontWeight.bold,
                                     fontSize: 22,
                                   ),
@@ -182,7 +182,7 @@ class _ClaimMerchPageState extends State<ClaimMerchPage> {
                             Text(
                               merch['nama'] ?? '',
                               style: const TextStyle(
-                                color: Color(0xFF009688),
+                                color: Color(0xFF2E7D32),
                                 fontWeight: FontWeight.bold,
                                 fontSize: 22,
                               ),
@@ -217,7 +217,7 @@ class _ClaimMerchPageState extends State<ClaimMerchPage> {
                         width: double.infinity,
                         child: ElevatedButton(
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color(0xFF009688),
+                            backgroundColor: Color(0xFF2E7D32),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(8),
                             ),

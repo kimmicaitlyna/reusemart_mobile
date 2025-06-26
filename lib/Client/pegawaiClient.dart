@@ -37,7 +37,7 @@ static const String baseUrl ='http://192.168.18.27:8000/api';
   }
 }
 
-static Future<void> registerFcmToken(String authToken, String fcmToken) async {
+  static Future<void> registerFcmToken(String authToken, String fcmToken) async {
     final url = Uri.parse('$baseUrl/pegawai/register-fcm-token');
 
     final response = await http.post(
@@ -184,6 +184,8 @@ static Future<void> registerFcmToken(String authToken, String fcmToken) async {
           "Content-Type": "application/json",
         },
       );
+print('🔵 updateStatus.statusCode: ${response.statusCode}');
+print('🔵 updateStatus.body: ${response.body}');
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);

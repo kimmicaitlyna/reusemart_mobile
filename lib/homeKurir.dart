@@ -213,11 +213,19 @@ class _HomeKurirState extends State<HomeKurir> {
 
   @override
   Widget build(BuildContext context) {
-    final List<Widget> _pages = [
-      _buildBerandaKurir(),
-      const HistoryPengiriman(),
-      const ProfileKurir(),
-    ];
+    Widget _getCurrentPage() {
+      switch (_selectedIndex) {
+        case 0:
+          return _buildBerandaKurir(); 
+        case 1:
+          return HistoryPengiriman();  
+        case 2:
+          return ProfileKurir();
+        default:
+          return _buildBerandaKurir();
+      }
+    }
+
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -239,7 +247,17 @@ class _HomeKurirState extends State<HomeKurir> {
         backgroundColor: darkGreen,
         elevation: 2,
       ),
-      body: _pages[_selectedIndex],
+      // body: _pages[_selectedIndex],
+      // body: IndexedStack(
+      //   index: _selectedIndex,
+      //   children: [
+      //     _buildBerandaKurir(), // ← panggil ulang setiap build
+      //     const HistoryPengiriman(),
+      //     const ProfileKurir(),
+      //   ],
+      // ),
+      body: _getCurrentPage(),
+
       bottomNavigationBar: NavigationBarTheme(
         data: NavigationBarThemeData(
           backgroundColor: darkGreen,
@@ -260,6 +278,7 @@ class _HomeKurirState extends State<HomeKurir> {
           onDestinationSelected: (index) {
             setState(() {
               _selectedIndex = index;
+              if (index == 0) getPengiriman();
             });
           },
           destinations: const [
