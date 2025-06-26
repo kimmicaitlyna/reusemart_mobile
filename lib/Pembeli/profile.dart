@@ -93,7 +93,8 @@ class _ProfilePembeliState extends State<ProfilePembeli> {
                                 MaterialPageRoute(
                                   builder: (context) => ClaimMerchPage(
                                     idPembeli: profileData!['idPembeli'],
-                                    poin: profileData!['poin'],
+                                    // poin: profileData!['poin'],
+                                    poin: int.parse(profileData!['poin'].toString()),
                                   ),
                                 ),
                               );

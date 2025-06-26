@@ -14,7 +14,8 @@ class ClaimMerchPage extends StatefulWidget {
 
 class _ClaimMerchPageState extends State<ClaimMerchPage> {
   late Future<List<Map<String, dynamic>>> _merchFuture;
-  final String baseUrl = 'http://192.168.18.27:8000/';
+  // final String baseUrl = 'http://192.168.18.27:8000/';
+  final String baseUrl = 'https://reusmart-test.store/';
 
   @override
   void initState() {
@@ -60,7 +61,7 @@ class _ClaimMerchPageState extends State<ClaimMerchPage> {
 
     try {
       final response = await http.post(
-        Uri.parse('http://192.168.18.27:8000/api/store/claim'),
+        Uri.parse('https://reusmart-test.store/api/store/claim'),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode(body),
       );

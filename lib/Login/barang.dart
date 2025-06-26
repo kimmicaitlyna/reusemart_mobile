@@ -65,8 +65,8 @@ class BarangState extends State<Barang> with TickerProviderStateMixin {
                         final barang = barangList[index];
                         final images = barang['images'] as List<dynamic>;
                         final imageUrl = images.isNotEmpty
-                            ? 'http://192.168.18.27:8000/${images[0]}'
-                            : 'http://192.168.18.27:8000/k19.jpg';
+                            ? 'https://reusmart-test.store/${images[0]}'
+                            : 'https://reusmart-test.store/k19.jpg';
                         final namaBarang = barang['namaBarang'] ?? '';
                         final hargaBarang = barang['hargaBarang'] ?? '';
                         final kategori = barang['kategori'] ?? '';
@@ -92,7 +92,7 @@ class BarangState extends State<Barang> with TickerProviderStateMixin {
                                 final List<String> imageList = [];
                                 for (var img in barang['images']) {
                                   if (img != null && img.toString().isNotEmpty) {
-                                    imageList.add('http://192.168.18.27:8000/$img');
+                                    imageList.add('https://reusmart-test.store/$img');
                                   }
                                 }
                                 return Dialog(
