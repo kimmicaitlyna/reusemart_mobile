@@ -94,6 +94,7 @@ class _LoginState extends State<Login> {
     } else if (selectedRole == 'penitip') {
       final responseData = await PenitipClient.login(username, password);
       if (responseData != null && responseData['penitip']['token'] != null) {
+        final penitip = responseData['penitip'];
         final token = responseData['penitip']['token'];
         
         if (fcmToken != null) {
@@ -102,6 +103,13 @@ class _LoginState extends State<Login> {
 
         await _saveToken(token);
         await PushNotifications.subscribeToUserTopic('penitip');
+
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.setString('idPenitip', penitip['idPenitip']);
+            await prefs.setString('namaPenitip', penitip['namaPenitip'] ?? 'Penitip'); // 🟢 Tambahan penting
+            print('SAVED idPenitip: ${penitip['idPenitip']}');
+print('SAVED namaPenitip: ${penitip['namaPenitip']}');
+
         showSnackBar('Login berhasil!');
         Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const HomePenitip()));
         return;

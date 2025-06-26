@@ -6,7 +6,7 @@ class PenitipClient{
   // static const String baseUrl ='http://192.168.18.27/reusemart_mobile/public/api';
   // static const String baseUrl ='http://192.168.108.121:8000/api';
   // static const String baseUrl ='https://reusmart-test.store/api';
-static const String baseUrl ='http://192.168.255.121:8000/api';
+static const String baseUrl ='http://192.168.18.27:8000/api';
   // static const String baseUrl ='http://10.0.2.2:8000/api';
 
 
@@ -167,5 +167,22 @@ static const String baseUrl ='http://192.168.255.121:8000/api';
     return null;
   }
 }
+
+static Future<Map<String, dynamic>> cekTopSellerBulanIni(String token, String idPenitip) async {
+  final response = await http.get(
+    Uri.parse('$baseUrl/top-seller/bulan-ini/$idPenitip'),
+    headers: {
+      'Authorization': 'Bearer $token',
+      'Accept': 'application/json',
+    },
+  );
+
+  if (response.statusCode == 200) {
+    return jsonDecode(response.body);
+  } else {
+    throw Exception('Gagal mengecek status Top Seller');
+  }
+}
+
 
 }

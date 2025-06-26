@@ -1,4 +1,5 @@
 // import 'package:flutter/material.dart';
+// import 'package:reusemart_mobile/Penitip/history.dart';
 // import 'package:reusemart_mobile/Penitip/profile.dart';
 // import 'package:shared_preferences/shared_preferences.dart';
 // import 'package:reusemart_mobile/Client/penitipClient.dart';
@@ -11,32 +12,19 @@
 // }
 
 // class _HomePenitipState extends State<HomePenitip> {
-//   bool isLoading = false;
 //   int _selectedIndex = 0;
-//   List<Map<String, dynamic>> topSellerData = []; // List to store fetched top seller data
+//   bool isLoading = false;
+//   Map<String, dynamic>? topSellerData;
 
-//   // Function to handle bottom navigation bar
-//   void _onItemTapped(int index) {
-//     setState(() {
-//       _selectedIndex = index;
-//     });
 
-//     if (index == 3) {
-//       Navigator.push(
-//         context,
-//         MaterialPageRoute(builder: (context) => const ProfilePenitip()),
-//       );
-//     }
-//   }
+//   static const Color darkGreen = Color(0xFF2E7D32);
 
-//   @override
 //   void initState() {
 //     super.initState();
-//     _getTopSellerData();
+//     loadTopSeller();
 //   }
 
-//   // Function to fetch top seller data
-//   Future<void> _getTopSellerData() async {
+//   Future<void> loadTopSeller() async {
 //     setState(() {
 //       isLoading = true;
 //     });
@@ -49,13 +37,10 @@
 //         throw Exception('Token tidak ditemukan');
 //       }
 
-//       final data = await PenitipClient.getTopSeller(token);
-//       print('Response data: $data');
+//       final data = await PenitipClient.cekTopSellerBulanIni(token, prefs.getString('idPenitip') ?? '');
 
 //       setState(() {
-//         if (data != null) {
-//           topSellerData = List<Map<String, dynamic>>.from(data); // Assign the fetched data to topSellerData
-//         }
+//         topSellerData  = (data != null && data['status'] == true) ? data : null;
 //         isLoading = false;
 //       });
 //     } catch (e) {
@@ -63,173 +48,113 @@
 //         isLoading = false;
 //       });
 //       ScaffoldMessenger.of(context).showSnackBar(
-//         SnackBar(content: Text('Failed to load top sellers: $e')),
+//         SnackBar(content: Text('Gagal memuat data: $e')),
 //       );
 //     }
 //   }
 
+//   final List<Widget> _pages = <Widget>[
+//     Center(
+//       child: Column(
+//         mainAxisSize: MainAxisSize.min,
+//         children: [
+//           const Icon(Icons.sell, size: 100, color: Color(0xFF4CAF50)),
+//           const SizedBox(height: 20),
+//           const Text(
+//             'Selamat datang, Penitip!',
+//             style: TextStyle(
+//               fontSize: 24,
+//               fontWeight: FontWeight.bold,
+//               color: Colors.black87,
+//             ),
+//           ),
+//           const SizedBox(height: 20),
+//           Container(
+//             padding: const EdgeInsets.all(16),
+//             margin: const EdgeInsets.symmetric(horizontal: 30),
+//             decoration: BoxDecoration(
+//               color: Colors.white,
+//               borderRadius: BorderRadius.circular(12),
+//             ),
+//             child: Text(
+//               '"Titip barangmu, raup keuntungan, jadilah Top Seller bulan ini!"',
+//               style: TextStyle(
+//                 fontStyle: FontStyle.italic,
+//                 fontSize: 16,
+//                 color: Colors.green[900],
+//               ),
+//               textAlign: TextAlign.center,
+//             ),
+//           ),
+//         ],
+//       ),
+//     ),
+//     const HistoryPenitipan(),
+//     const ProfilePenitip(),
+//   ];
+
 //   @override
 //   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: const Text(
-//           'Beranda Penitip',
-//           style: TextStyle(
-//             fontSize: 24,
-//             fontWeight: FontWeight.bold,
-//             color: Colors.white,
-//           ),
+//     return Container(
+//       decoration: const BoxDecoration(
+//         gradient: LinearGradient(
+//           colors: [Color(0xFFE8F5E9), Color(0xFFC8E6C9)],
+//           begin: Alignment.topCenter,
+//           end: Alignment.bottomCenter,
 //         ),
-//         centerTitle: true,
-//         backgroundColor: const Color.fromARGB(255, 25, 151, 9),
-//         automaticallyImplyLeading: false,
 //       ),
-//       body: SafeArea(
-//         child: SingleChildScrollView(
-//           child: Column(
-//             crossAxisAlignment: CrossAxisAlignment.start,
-//             children: <Widget>[
-//               Container(
-//                 width: double.infinity,
-//                 decoration: BoxDecoration(
-//                     color: Colors.white,
-//                     borderRadius: BorderRadius.vertical(bottom: Radius.circular(30))),
-//                 padding: EdgeInsets.all(20.0),
-//                 child: Column(
-//                   crossAxisAlignment: CrossAxisAlignment.start,
-//                   children: <Widget>[
-//                     Text(
-//                       'Find Your',
-//                       style: TextStyle(color: Colors.black87, fontSize: 25),
-//                     ),
-//                     SizedBox(height: 5),
-//                     Text(
-//                       'Inspiration',
-//                       style: TextStyle(color: Colors.black, fontSize: 40, fontWeight: FontWeight.bold),
-//                     ),
-//                     SizedBox(height: 20),
-                    
-//                   ],
-//                 ),
-//               ),
-//               SizedBox(height: 20),
-//               Padding(
-//                 padding: const EdgeInsets.symmetric(horizontal: 20.0),
-//                 child: Column(
-//                   crossAxisAlignment: CrossAxisAlignment.start,
-//                   children: <Widget>[
-//                     Text(
-//                       'Promo Today',
-//                       style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
-//                     ),
-//                     SizedBox(height: 15),
-//                     // Show the loading spinner while data is being fetched
-//                     isLoading
-//                         ? CircularProgressIndicator() // Display a loading indicator
-//                         : Container(
-//                             height: 200,
-//                             child: ListView.builder(
-//                               scrollDirection: Axis.horizontal,
-//                               itemCount: topSellerData.length, // Number of top sellers
-//                               itemBuilder: (context, index) {
-//                                 final topSeller = topSellerData[index];
-//                                 return promoCard(
-//                                   topSeller['penitip']['namaPenitip'], // Display username
-//                                   topSeller['nominal'], // Display nominal
-//                                 );
-//                               },
-//                             ),
-//                           ),
-//                     SizedBox(height: 20),
-//                     // Static section for the "Best Design" promo (just like the original)
-//                     Container(
-//                       height: 150,
-//                       decoration: BoxDecoration(
-//                         borderRadius: BorderRadius.circular(20),
-//                         image: DecorationImage(
-//                             fit: BoxFit.cover, image: AssetImage('assets/images/three.jpg')),
-//                       ),
-//                       child: Container(
-//                         decoration: BoxDecoration(
-//                           borderRadius: BorderRadius.circular(20),
-//                           gradient: LinearGradient(
-//                               begin: Alignment.bottomRight,
-//                               stops: [0.3, 0.9],
-//                               colors: [
-//                                 Colors.black.withOpacity(.8),
-//                                 Colors.black.withOpacity(.2)
-//                               ]),
-//                         ),
-//                         child: Align(
-//                           alignment: Alignment.bottomLeft,
-//                           child: Padding(
-//                             padding: const EdgeInsets.all(15.0),
-//                             child: Text(
-//                               'Best Design',
-//                               style: TextStyle(color: Colors.white, fontSize: 20),
-//                             ),
-//                           ),
-//                         ),
-//                       ),
-//                     ),
-//                   ],
-//                 ),
-//               ),
+//       child: Scaffold(
+//         backgroundColor: Colors.transparent,
+//         appBar: AppBar(
+//           title: Text(
+//             _selectedIndex == 2
+//                 ? 'Profil Penitip'
+//                 : _selectedIndex == 1
+//                     ? 'Riwayat Penitipan'
+//                     : 'Beranda Penitip',
+//             style: const TextStyle(
+//               fontSize: 24,
+//               fontWeight: FontWeight.bold,
+//               color: Colors.white,
+//             ),
+//           ),
+//           centerTitle: true,
+//           automaticallyImplyLeading: false,
+//           backgroundColor: darkGreen,
+//           elevation: 2,
+//         ),
+//         body: _pages[_selectedIndex],
+//         bottomNavigationBar: NavigationBarTheme(
+//           data: NavigationBarThemeData(
+//             backgroundColor: darkGreen,
+//             indicatorColor: Colors.white.withOpacity(0.2),
+//             labelTextStyle: MaterialStateProperty.resolveWith((states) {
+//               return const TextStyle(
+//                 color: Colors.white,
+//                 fontWeight: FontWeight.w600,
+//               );
+//             }),
+//             iconTheme: MaterialStateProperty.resolveWith((states) {
+//               if (states.contains(MaterialState.selected)) {
+//                 return const IconThemeData(color: Colors.white);
+//               }
+//               return const IconThemeData(color: Colors.white70);
+//             }),
+//           ),
+//           child: NavigationBar(
+//             height: 65,
+//             selectedIndex: _selectedIndex,
+//             onDestinationSelected: (index) {
+//               setState(() {
+//                 _selectedIndex = index;
+//               });
+//             },
+//             destinations: const [
+//               NavigationDestination(icon: Icon(Icons.home), label: 'Home'),
+//               NavigationDestination(icon: Icon(Icons.history), label: 'History'),
+//               NavigationDestination(icon: Icon(Icons.person), label: 'Profil'),
 //             ],
 //           ),
-//         ),
-//       ),
-//       bottomNavigationBar: NavigationBarTheme(
-//         data: NavigationBarThemeData(
-//           backgroundColor: const Color.fromARGB(255, 25, 151, 9),
-//           indicatorColor: Colors.transparent,
-//           labelTextStyle: MaterialStateProperty.resolveWith((states) {
-//             return const TextStyle(color: Colors.white);
-//           }),
-//           iconTheme: MaterialStateProperty.resolveWith((states) {
-//             return const IconThemeData(color: Colors.white);
-//           }),
-//         ),
-//         child: NavigationBar(
-//           selectedIndex: _selectedIndex,
-//           onDestinationSelected: _onItemTapped,
-//           destinations: const [
-//             NavigationDestination(icon: Icon(Icons.home), label: 'Home'),
-//             NavigationDestination(icon: Icon(Icons.notifications), label: 'Notifikasi'),
-//             NavigationDestination(icon: Icon(Icons.message), label: 'History'),
-//             NavigationDestination(icon: Icon(Icons.person), label: 'Profil'),
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-
-//   // Promo card that displays username and nominal
-//   Widget promoCard(String username, int nominal) {
-//     return AspectRatio(
-//       aspectRatio: 2.62 / 3,
-//       child: Container(
-//         margin: EdgeInsets.only(right: 15.0),
-//         decoration: BoxDecoration(
-//           borderRadius: BorderRadius.circular(20),
-//           color: Colors.white,
-//           boxShadow: [
-//             BoxShadow(color: Colors.black.withOpacity(0.2), blurRadius: 6, offset: Offset(0, 2)),
-//           ],
-//         ),
-//         child: Column(
-//           mainAxisAlignment: MainAxisAlignment.center,
-//           children: <Widget>[
-//             Text(
-//               username,
-//               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-//             ),
-//             SizedBox(height: 5),
-//             Text(
-//               'Nominal: \$${nominal.toString()}',
-//               style: TextStyle(fontSize: 16),
-//             ),
-//           ],
 //         ),
 //       ),
 //     );
@@ -252,17 +177,17 @@ class HomePenitip extends StatefulWidget {
 class _HomePenitipState extends State<HomePenitip> {
   int _selectedIndex = 0;
   bool isLoading = false;
-  List<Map<String, dynamic>> topSellerData = [];
+  Map<String, dynamic>? topSellerData;
 
   static const Color darkGreen = Color(0xFF2E7D32);
 
   @override
   void initState() {
     super.initState();
-    _getTopSellerData();
+    loadTopSeller();
   }
 
-  Future<void> _getTopSellerData() async {
+  Future<void> loadTopSeller() async {
     setState(() {
       isLoading = true;
     });
@@ -270,14 +195,16 @@ class _HomePenitipState extends State<HomePenitip> {
     try {
       final prefs = await SharedPreferences.getInstance();
       final token = prefs.getString('token');
+      final idPenitip = prefs.getString('idPenitip') ?? '';
 
-      if (token == null) throw Exception('Token tidak ditemukan');
+      if (token == null || idPenitip.isEmpty) {
+        throw Exception('Token atau ID Penitip tidak ditemukan');
+      }
 
-      final data = await PenitipClient.getTopSeller(token);
+      final data = await PenitipClient.cekTopSellerBulanIni(token, idPenitip);
+
       setState(() {
-        if (data != null) {
-          topSellerData = List<Map<String, dynamic>>.from(data);
-        }
+        topSellerData = (data != null && data['status'] == true) ? data : null;
         isLoading = false;
       });
     } catch (e) {
@@ -289,6 +216,94 @@ class _HomePenitipState extends State<HomePenitip> {
       );
     }
   }
+
+  List<Widget> get pages => <Widget>[
+        _buildHomePage(),
+        const HistoryPenitipan(),
+        const ProfilePenitip(),
+      ];
+
+Widget _buildHomePage() {
+  if (isLoading) {
+    return const Center(child: CircularProgressIndicator());
+  }
+
+  return Center(
+    child: Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        if (topSellerData?['isTopSeller'] == true)
+          Card(
+            elevation: 6,
+            color: Colors.amber[700],
+            margin: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: const [
+                  Icon(Icons.emoji_events, color: Colors.white, size: 30),
+                  SizedBox(width: 12),
+                  Flexible(
+                    child: Text(
+                      'Selamat! Kamu adalah Top Seller bulan ini 🎉',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 18,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        const SizedBox(height: 24),
+        const Icon(Icons.sell, size: 100, color: Color(0xFF4CAF50)),
+        const SizedBox(height: 20),
+        const Text(
+          'Selamat datang, Penitip!',
+          style: TextStyle(
+            fontSize: 26,
+            fontWeight: FontWeight.bold,
+            color: Colors.black87,
+          ),
+        ),
+        const SizedBox(height: 20),
+        Container(
+          padding: const EdgeInsets.all(20),
+          margin: const EdgeInsets.symmetric(horizontal: 30),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(16),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey.withOpacity(0.3),
+                blurRadius: 10,
+                offset: const Offset(0, 6),
+              ),
+            ],
+          ),
+          child: const Text(
+            '"Titip barangmu, raup keuntungan, dan rebut gelar Top Seller bulan ini!"',
+            style: TextStyle(
+              fontStyle: FontStyle.italic,
+              fontSize: 17,
+              color: Color(0xFF2E7D32),
+            ),
+            textAlign: TextAlign.center,
+          ),
+        ),
+      ],
+    ),
+  );
+}
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -307,7 +322,7 @@ class _HomePenitipState extends State<HomePenitip> {
             _selectedIndex == 2
                 ? 'Profil Penitip'
                 : _selectedIndex == 1
-                    ? 'Riwayat'
+                    ? 'Riwayat Penitipan'
                     : 'Beranda Penitip',
             style: const TextStyle(
               fontSize: 24,
@@ -320,17 +335,17 @@ class _HomePenitipState extends State<HomePenitip> {
           backgroundColor: darkGreen,
           elevation: 2,
         ),
-        body: _buildBody(),
+        body: pages[_selectedIndex],
         bottomNavigationBar: NavigationBarTheme(
           data: NavigationBarThemeData(
             backgroundColor: darkGreen,
             indicatorColor: Colors.white.withOpacity(0.2),
-            labelTextStyle: MaterialStateProperty.all(
-              const TextStyle(
+            labelTextStyle: MaterialStateProperty.resolveWith((states) {
+              return const TextStyle(
                 color: Colors.white,
                 fontWeight: FontWeight.w600,
-              ),
-            ),
+              );
+            }),
             iconTheme: MaterialStateProperty.resolveWith((states) {
               return IconThemeData(
                 color: states.contains(MaterialState.selected)
@@ -357,136 +372,4 @@ class _HomePenitipState extends State<HomePenitip> {
       ),
     );
   }
-
-  Widget _buildBody() {
-    if (_selectedIndex == 2) {
-      return const ProfilePenitip();
-    } else if (_selectedIndex == 1) {
-      return const HistoryPenitipan();
-    }
-
-    return SafeArea(
-      child: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Container(
-              width: double.infinity,
-              decoration: const BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.vertical(bottom: Radius.circular(30)),
-              ),
-              padding: const EdgeInsets.all(20.0),
-              child: const Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text('Find Your', style: TextStyle(color: Colors.black87, fontSize: 25)),
-                  SizedBox(height: 5),
-                  Text('Inspiration',
-                      style: TextStyle(
-                          color: Colors.black, fontSize: 40, fontWeight: FontWeight.bold)),
-                  SizedBox(height: 20),
-                ],
-              ),
-            ),
-            const SizedBox(height: 20),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  const Text(
-                    'Promo Today',
-                    style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
-                  ),
-                  const SizedBox(height: 15),
-                  isLoading
-                      ? const Center(child: CircularProgressIndicator())
-                      : SizedBox(
-                          height: 200,
-                          child: ListView.builder(
-                            scrollDirection: Axis.horizontal,
-                            itemCount: topSellerData.length,
-                            itemBuilder: (context, index) {
-                              final topSeller = topSellerData[index];
-                              return promoCard(
-                                topSeller['penitip']['namaPenitip'],
-                                topSeller['nominal'],
-                              );
-                            },
-                          ),
-                        ),
-                  const SizedBox(height: 20),
-                  Container(
-                    height: 150,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(20),
-                      image: const DecorationImage(
-                        fit: BoxFit.cover,
-                        image: AssetImage('assets/images/three.jpg'),
-                      ),
-                    ),
-                    child: Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(20),
-                        gradient: LinearGradient(
-                          begin: Alignment.bottomRight,
-                          stops: const [0.3, 0.9],
-                          colors: [
-                            Colors.black.withOpacity(.8),
-                            Colors.black.withOpacity(.2),
-                          ],
-                        ),
-                      ),
-                      child: const Align(
-                        alignment: Alignment.bottomLeft,
-                        child: Padding(
-                          padding: EdgeInsets.all(15.0),
-                          child: Text(
-                            'Best Design',
-                            style: TextStyle(color: Colors.white, fontSize: 20),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget promoCard(String username, int nominal) {
-    return AspectRatio(
-      aspectRatio: 2.62 / 3,
-      child: Container(
-        margin: const EdgeInsets.only(right: 15.0),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(20),
-          color: Colors.white,
-          boxShadow: [
-            BoxShadow(color: Colors.black.withOpacity(0.2), blurRadius: 6, offset: const Offset(0, 2)),
-          ],
-        ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              username,
-              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 5),
-            Text(
-              'Nominal: Rp${nominal.toString()}',
-              style: const TextStyle(fontSize: 16),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
 }
-
