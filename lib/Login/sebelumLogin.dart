@@ -116,7 +116,7 @@ class SebelumLoginState extends State<SebelumLogin> with TickerProviderStateMixi
                             ),
                             SizedBox(height: 20),
                             Container(
-                              height: 180, //subteks
+                              height: 180, // Tinggi ditambah untuk memberi ruang subteks
                               child: ListView.builder(
                                 scrollDirection: Axis.horizontal,
                                 itemCount: keuntunganList.length,
@@ -125,7 +125,7 @@ class SebelumLoginState extends State<SebelumLogin> with TickerProviderStateMixi
                                   return FadeInUp(
                                     duration: Duration(milliseconds: 1400 + (index * 100)),
                                     child: Container(
-                                      width: 150, //subteks
+                                      width: 150, // Lebar ditambah untuk memberi ruang subteks
                                       margin: EdgeInsets.only(right: 15),
                                       child: Card(
                                         color: Colors.white.withOpacity(0.1),
@@ -151,7 +151,7 @@ class SebelumLoginState extends State<SebelumLogin> with TickerProviderStateMixi
                                                 ),
                                               ),
                                               SizedBox(height: 5),
-                                              
+                                              // WIDGET SUBTEKS DITAMBAHKAN DI SINI
                                               Text(
                                                 item.subtitle,
                                                 textAlign: TextAlign.center,
@@ -169,6 +169,7 @@ class SebelumLoginState extends State<SebelumLogin> with TickerProviderStateMixi
                                 },
                               ),
                             ),
+                            // --- AKHIR MODIFIKASI ---
                             SizedBox(height: 60),
                             FadeInUp(
                               duration: const Duration(milliseconds: 1600),
@@ -176,7 +177,7 @@ class SebelumLoginState extends State<SebelumLogin> with TickerProviderStateMixi
                                 borderRadius: BorderRadius.circular(20),
                                 child: FeatureSection(
                                   color: Color.fromARGB(255, 91, 215, 133),
-                                  imagePath: 'lib/assets/bg-showcase-1.jpg',
+                                  imagePath: 'lib/assets/bg-showcase-1.jpg', // GANTI DENGAN GAMBAR ANDA
                                   title: 'Temukan, Beli, Sampai!',
                                   description: 'Jelajahi berbagai barang bekas dengan mudah, dan beli dengan aman serta nyaman. Dari menemukan barang bekas berkualitas hingga proses pembelian yang lancar, kami memastikan pengalaman berbelanja Anda memuaskan.',
                                 ),
@@ -189,10 +190,10 @@ class SebelumLoginState extends State<SebelumLogin> with TickerProviderStateMixi
                                 borderRadius: BorderRadius.circular(20),
                                 child: FeatureSection(
                                   color: Colors.white,
-                                  imagePath: 'lib/assets/bg-showcase-2.jpg', 
+                                  imagePath: 'lib/assets/bg-showcase-2.jpg', // GANTI DENGAN GAMBAR ANDA
                                   title: 'Barang Lama Bisa Bercerita',
                                   description: 'Daripada menumpuk kenangan di gudang, yuk berdayakan kembali barang-barang Anda. Berikan mereka cerita baru di tangan pemilik yang baru dan dapatkan keuntungan lebih.',
-                                  textFirst: false,
+                                  textFirst: false, // Gambar di sebelah kiri
                                 ),
                               ),
                             ),
@@ -203,7 +204,7 @@ class SebelumLoginState extends State<SebelumLogin> with TickerProviderStateMixi
                                 borderRadius: BorderRadius.circular(20),
                                 child: FeatureSection(
                                   color: Color.fromARGB(255, 91, 215, 133),
-                                  imagePath: 'lib/assets/bg-showcase-3.jpg', 
+                                  imagePath: 'lib/assets/bg-showcase-3.jpg', // GANTI DENGAN GAMBAR ANDA
                                   title: 'Berkontribusi untuk sesama',
                                   description: 'Apabila barangmu tidak dapat menemukan pemilik baru, tenang saja, Reusemart akan memastikan agar barangmu membantu panti asuhan, organisasi masyarakat, dan komunitas lainya!',
                                 ),
@@ -356,7 +357,7 @@ class FeatureSection extends StatelessWidget {
   Widget build(BuildContext context) {
     final textColor = color == Colors.white ? Colors.black : Colors.white;
 
-
+    // Widget untuk bagian teks
     final textWidget = Expanded(
       child: Container(
         padding: const EdgeInsets.all(24.0),
@@ -387,12 +388,12 @@ class FeatureSection extends StatelessWidget {
       ),
     );
 
-
+    // Widget untuk bagian gambar
     final imageWidget = Expanded(
       child: Image.asset(
         imagePath,
         fit: BoxFit.cover,
-
+        // Error builder jika gambar tidak ditemukan
         errorBuilder: (context, error, stackTrace) {
           return Container(
             color: Colors.grey[300],
@@ -404,9 +405,10 @@ class FeatureSection extends StatelessWidget {
       ),
     );
 
-
+    // LayoutBuilder untuk tata letak responsif
     return LayoutBuilder(
       builder: (context, constraints) {
+        // Jika layar lebar (misal: tablet/desktop), gunakan Row
         if (constraints.maxWidth > 600) {
           return IntrinsicHeight(
             child: Row(
@@ -415,10 +417,10 @@ class FeatureSection extends StatelessWidget {
             ),
           );
         } else {
-        
+          // Jika layar sempit (misal: ponsel), gunakan Column
           return Column(
             children: [
-            
+              // Untuk layout kolom, kita tidak bisa menggunakan Expanded, jadi kita bungkus ulang
               Container(
                 width: double.infinity,
                 padding: const EdgeInsets.all(24.0),
