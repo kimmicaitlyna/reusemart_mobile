@@ -126,7 +126,7 @@ class _HistoryPembelianState extends State<HistoryPembelian> {
                             ),
                             const SizedBox(height: 12),
                             Text(
-                              "Total Harga: ${currencyFormatter.format(item['totalHarga'] ?? 0)}",
+                             "Total Harga: ${currencyFormatter.format(int.tryParse(item['totalHarga'] ?? '0') ?? 0)}",
                               style: const TextStyle(fontSize: 15),
                             ),
                             Text(
