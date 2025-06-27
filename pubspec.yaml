@@ -37,3 +37,6 @@ flutter:
   assets:
     - lib/assets/logoReUseMart.png
     - lib/assets/pp.png
+    - lib/assets/bg-showcase-1.jpg
+    - lib/assets/bg-showcase-2.jpg
+    - lib/assets/bg-showcase-3.jpg
