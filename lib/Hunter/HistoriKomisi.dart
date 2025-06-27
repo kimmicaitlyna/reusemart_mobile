@@ -118,8 +118,8 @@ Widget build(BuildContext context) {
                                     _buildDetail("ID Transaksi Penitipan", item['idTransaksiPenitipan']),
                                     _buildDetail("No. Nota Pembelian", item['noNota']),
                                     _buildDetail("Nama Barang", item['namaBarang']),
-                                    _buildDetail("Harga Barang", currencyFormatter.format(item['hargaBarang'] ?? 0)),
-                                    _buildDetail("Komisi Hunter (5%)", currencyFormatter.format(item['komisiHunter'] ?? 0)),
+                                    _buildDetail("Harga Barang", currencyFormatter.format(int.tryParse(item['hargaBarang'] ?? 0))),
+                                    _buildDetail("Komisi Hunter (5%)", currencyFormatter.format(int.tryParse(item['komisiHunter'] ?? 0))),
 
                                   ],
                                 ),
